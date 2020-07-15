@@ -104,7 +104,8 @@ class Frogger:
 		self.enemys.empty()
 		self._create_enemys()
 		self.player.reset_player()
-		self.stats.reset_stats()
+		self.stats.lives_left -= 1
+		self.sb.prep_lives()
 		self.sb.prep_level()
 		sleep(0.5)
 
@@ -143,6 +144,13 @@ class Frogger:
 		self._update_player()
 		# display scoreboard 
 		self.sb.show_score()
+
+		if self.stats.lives_left == 0:
+			self.stats.game_active = False
+			pygame.mouse.set_visible(True)
+			self.stats.reset_stats()
+			self.sb.prep_lives()
+			self.sb.prep_level()
 
 		if not self.stats.game_active:
 			self.play_button.draw_button()

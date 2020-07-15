@@ -16,6 +16,7 @@ class Scoreboard:
 		self.text_font = pygame.font.SysFont(None, 38)
 
 		self.prep_level()
+		self.prep_lives()
 
 	def prep_level(self):
 		""" make level into an image """
@@ -26,7 +27,18 @@ class Scoreboard:
 		self.level_rect = self.level_image.get_rect()
 		self.level_rect.left = self.screen_rect.left + 20
 		self.level_rect.top = 20
+	
+	def prep_lives(self):
+		""" makes player lives into image """
+		player_lives = 'Lives: {}'.format(self.stats.lives_left)
+		self.lives_image = self.text_font.render(
+			player_lives, True, self.text_color, self.settings.bg_color)
+		# position rendered text
+		self.player_lives_rect = self.level_image.get_rect()
+		self.player_lives_rect.right = self.screen_rect.right - 20
+		self.player_lives_rect.top = 20
 
 	def show_score(self):
 		""" display current information to the screen """
 		self.screen.blit(self.level_image, self.level_rect)
+		self.screen.blit(self.lives_image, self.player_lives_rect)

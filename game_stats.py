@@ -12,6 +12,5 @@ class GameStats:
 
 	def reset_stats(self):
 		""" reset the game stats """
-		self.score = 0
 		self.level = 1
 		self.lives_left = self.settings.player_life_limit
