@@ -111,7 +111,6 @@ class Frogger:
 
 	def _create_enemys(self):
 		""" create enemys """
-		enemy = Enemy(self)
 		for row_number in range(1, 5):
 			self._create_enemy(row_number)
 
@@ -148,6 +147,7 @@ class Frogger:
 		if self.stats.lives_left == 0:
 			self.stats.game_active = False
 			pygame.mouse.set_visible(True)
+			pygame.mixer.music.stop()
 			self.stats.reset_stats()
 			self.sb.prep_lives()
 			self.sb.prep_level()
