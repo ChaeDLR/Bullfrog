@@ -1,3 +1,4 @@
+# Chae DeLaRosa
 import pygame
 import sys
 import random
@@ -24,7 +25,7 @@ class Frogger:
 		self.screen = pygame.display.set_mode((
 			self.settings.screen_width, self.settings.screen_height))
 		# set caption
-		pygame.display.set_caption("Frogger Clone")
+		pygame.display.set_caption("Bullfrog")
 		# enemy group 
 		self.enemys = pygame.sprite.Group()
 		# pygame clock 
