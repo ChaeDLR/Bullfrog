@@ -1,4 +1,5 @@
 import pygame
+import os
 from pygame.sprite import Sprite
 
 
@@ -10,15 +11,18 @@ class Enemy(Sprite):
         super().__init__()
         self.screen = frogger.screen
         self.settings = frogger.settings
-        # load our image
-        self.image = pygame.image.load('../assets/enemy_ship.png')
+        self._load_enemy_image()
         # enemy rect
         self.rect = self.image.get_rect()
-
         self.enemy_direction = 1
         self.screen_rect = self.screen.get_rect()
         self.enemy_speed = 1
         self.x = float(self.rect.x)
+
+    def _load_enemy_image(self):
+        path = os.path.dirname(__file__)
+        self.image = pygame.image.load(
+            os.path.join(path, 'assets/enemy_ship.png'))
 
     def check_edges(self):
         """ make sure player is in screen bounds """

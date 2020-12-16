@@ -1,4 +1,5 @@
 import pygame
+import os
 from pygame.sprite import Sprite
 
 
@@ -15,15 +16,20 @@ class Player(Sprite):
         self.settings = frogger.settings
 
         self.screen_rect = frogger.screen.get_rect()
-
-        # set player image
-        self.image = pygame.image.load('../assets/player_ship.png')
+        self._load_player_image()
         # get rect
         self.rect = self.image.get_rect()
 
         # set player initial position
         self.rect.midbottom = self.screen_rect.midbottom
         self.y = float(self.rect.y)
+
+    def _load_player_image(self):
+        """ Load player image from assets folder """
+        # set player image
+        path = os.path.dirname(__file__)
+        self.image = pygame.image.load(
+            os.path.join(path, 'assets/player_ship.png'))
 
     def reset_player(self):
         """ reset player position """

@@ -2,14 +2,8 @@
 import pygame
 import sys
 import random
-import game_sound as gs
-from game_scores import Scoreboard
-from game_stats import GameStats
-from button import Button
-from time import sleep
-from settings import Settings
-from player import Player
-from enemy import Enemy
+import time
+import game_files
 
 
 class Frogger:
@@ -20,8 +14,8 @@ class Frogger:
 
         # intialize pygame
         pygame.init()
-        self.settings = Settings()
-        self.stats = GameStats(self)
+        self.settings = game_files.Settings()
+        self.stats = game_files.GameStats(self)
         # create screen
         self.screen = pygame.display.set_mode((
             self.settings.screen_width, self.settings.screen_height))
@@ -34,11 +28,13 @@ class Frogger:
         # create enemys
         self._create_enemys()
         # create the player
-        self.player = Player(self)
+        self.player = game_files.Player(self)
         # create play button
-        self.play_button = Button(self)
+        self.play_button = game_files.Button(self)
         # create scoreboard
-        self.sb = Scoreboard(self)
+        self.sb = game_files.Scoreboard(self)
+
+        self.gs = game_files.GameSound()
 
     def run_game(self):
         """ main loop """
@@ -83,10 +79,10 @@ class Frogger:
         if event.key == pygame.K_q:
             sys.exit()
         elif event.key == pygame.K_UP and self.stats.game_active:
-            gs.player_movement_sound.play()
+            self.gs.player_movement_sound.play()
             self.player.move_forward()
         elif event.key == pygame.K_DOWN and self.stats.game_active:
-            gs.player_movement_sound.play()
+            self.gs.player_movement_sound.play()
             self.player.move_backward()
 
     def _update_player(self):
@@ -95,22 +91,22 @@ class Frogger:
         if self.player.check_position():
             self.enemys.empty()
             self.stats.level += 1
-            self.settings.change_bg_color(self.stats.level)
+            self.settings.change_bg_color()
             self.sb.prep_level()
             self.player.reset_player()
             self._create_enemys()
-            sleep(0.2)
+            time.sleep(0.2)
 
     def _player_hit(self):
         """ respond to the player getting hit """
-        gs.player_impact_sound.play()
+        self.gs.player_impact_sound.play()
         self.enemys.empty()
         self._create_enemys()
         self.player.reset_player()
         self.stats.lives_left -= 1
         self.sb.prep_lives()
         self.sb.prep_level()
-        sleep(0.5)
+        time.sleep(0.5)
 
     def _create_enemys(self):
         """ create enemys """
@@ -119,7 +115,7 @@ class Frogger:
 
     def _create_enemy(self, row_number):
         """ create enemy """
-        enemy = Enemy(self)
+        enemy = game_files.Enemy(self)
         enemy.enemy_speed = random.randint(3, 8)
         enemy.enemy_direction = random.choice((-1, 1))
         enemy.y = row_number * 100
@@ -152,7 +148,7 @@ class Frogger:
             pygame.mouse.set_visible(True)
             pygame.mixer.music.stop()
             self.stats.reset_stats()
-            self.settings.change_bg_color(self.stats.level)
+            self.settings.change_bg_color()
             self.sb.prep_lives()
             self.sb.prep_level()
 

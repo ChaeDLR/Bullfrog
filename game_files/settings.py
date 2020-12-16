@@ -1,5 +1,4 @@
 import random
-from colors import colors
 
 
 class Settings:
@@ -7,8 +6,7 @@ class Settings:
 
     def __init__(self):
         """ initialize our game settings """
-        self.color = colors
-        self.bg_color = self.color[0]
+        self.change_bg_color()
         self.screen_width = 400
         self.screen_height = 600
 
@@ -23,5 +21,6 @@ class Settings:
         # player stats
         self.player_life_limit = 3
 
-    def change_bg_color(self, index: int):
-        self.bg_color = self.color[index]
+    def change_bg_color(self):
+        self.bg_color = (random.randint(1, 255), random.randint(
+            1, 255), random.randint(1, 255))
