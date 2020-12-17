@@ -6,7 +6,6 @@ class Settings:
 
     def __init__(self):
         """ initialize our game settings """
-        self.change_bg_color()
         self.screen_width = 400
         self.screen_height = 600
 
@@ -14,13 +13,27 @@ class Settings:
 
         self.screen_rows = self.screen_height / 12
 
-        # enemy random variables
-        self.enemy_speed = random.randint(1, 3)
-        self.enemy_direction = 1
-
-        # player stats
         self.player_life_limit = 3
 
+        self.reset_background()
+
+    def reset_background(self):
+        self.rgb_color = [0, 250, 0]
+        self.bg_color = (self.rgb_color[0],
+                         self.rgb_color[1], self.rgb_color[2])
+
     def change_bg_color(self):
-        self.bg_color = (random.randint(1, 255), random.randint(
-            1, 255), random.randint(1, 255))
+        """ Starts on green makes its way to red as the player beats levels """
+        if self.rgb_color[2] < 250 and self.rgb_color[1] == 250:
+            self.rgb_color[2] += 50
+        elif self.rgb_color[2] == 250 and self.rgb_color[1] > 0:
+            self.rgb_color[1] -= 50
+        elif self.rgb_color[1] == 0 and self.rgb_color[0] < 250:
+            self.rgb_color[0] += 50
+        elif self.rgb_color[0] == 250 and self.rgb_color[2] > 0:
+            self.rgb_color[2] -= 50
+        else:
+            self.rgb_color = [0, 250, 0]
+
+        self.bg_color = (self.rgb_color[0],
+                         self.rgb_color[1], self.rgb_color[2])

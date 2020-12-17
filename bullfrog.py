@@ -6,7 +6,7 @@ import time
 import game_files
 
 
-class Frogger:
+class BullFrog:
     """ Main game """
 
     def __init__(self):
@@ -148,7 +148,7 @@ class Frogger:
             pygame.mouse.set_visible(True)
             pygame.mixer.music.stop()
             self.stats.reset_stats()
-            self.settings.change_bg_color()
+            self.settings.reset_background()
             self.sb.prep_lives()
             self.sb.prep_level()
 
@@ -159,5 +159,5 @@ class Frogger:
 
 
 if __name__ == '__main__':
-    frogger = Frogger()
-    frogger.run_game()
+    theBullFrog = BullFrog()
+    theBullFrog.run_game()
