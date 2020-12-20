@@ -20,9 +20,15 @@ class Player(Sprite):
         # get rect
         self.rect = self.image.get_rect()
 
+        self.movement_speed = 5
+
         # set player initial position
         self.rect.midbottom = self.screen_rect.midbottom
         self.y = float(self.rect.y)
+        self.x = float(self.rect.x)
+
+        self.moving_left = False
+        self.moving_right = False
 
     def _load_player_image(self):
         """ Load player image from assets folder """
@@ -39,8 +45,14 @@ class Player(Sprite):
 
     def check_position(self):
         """ check player position """
-        if self.rect.top < 0:
+        if self.rect.top < 31:
             return True
+
+    def update_position(self):
+        if self.rect.left > 0 and self.moving_left:
+            self._move_left()
+        elif self.rect.right < self.settings.screen_width and self.moving_right:
+            self._move_right()
 
     def move_forward(self):
         """ move player forward """
@@ -52,6 +64,14 @@ class Player(Sprite):
         if self.rect.bottom < self.screen_rect.bottom:
             self.y += self.settings.screen_rows
         self.rect.y = self.y
+
+    def _move_left(self):
+        self.x -= self.movement_speed
+        self.rect.x = self.x
+
+    def _move_right(self):
+        self.x += self.movement_speed
+        self.rect.x = self.x
 
     def blitme(self):
         """ blit the player """

@@ -53,8 +53,10 @@ class BullFrog:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-            elif event.type == pygame.KEYDOWN:
+            elif event.type == pygame.KEYDOWN and self.stats.game_active:
                 self._check_keydown_events(event)
+            elif event.type == pygame.KEYUP and self.stats.game_active:
+                self._check_keyup_events(event)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 # returns mouse x,y cords
                 mouse_pos = pygame.mouse.get_pos()
@@ -81,15 +83,26 @@ class BullFrog:
         """ check for and respond to player input """
         if event.key == pygame.K_q:
             sys.exit()
-        elif event.key == pygame.K_UP and self.stats.game_active:
+        elif event.key == pygame.K_UP:
             self.gs.player_movement_sound.play()
             self.player.move_forward()
-        elif event.key == pygame.K_DOWN and self.stats.game_active:
+        elif event.key == pygame.K_DOWN:
             self.gs.player_movement_sound.play()
             self.player.move_backward()
+        elif event.key == pygame.K_LEFT:
+            self.player.moving_left = True
+        elif event.key == pygame.K_RIGHT:
+            self.player.moving_right = True
+
+    def _check_keyup_events(self, event):
+        if event.key == pygame.K_LEFT:
+            self.player.moving_left = False
+        elif event.key == pygame.K_RIGHT:
+            self.player.moving_right = False
 
     def _update_player(self):
         """ player values that need to be updated """
+        self.player.update_position()
         self.player.blitme()
         if self.player.check_position():
             self.enemys.empty()
