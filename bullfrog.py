@@ -36,6 +36,8 @@ class BullFrog:
 
         self.gs = game_files.GameSound()
 
+        self.game_over_flag = False
+
     def run_game(self):
         """ main loop """
         while True:
@@ -67,6 +69,7 @@ class BullFrog:
             # reset game
             self.stats.reset_stats()
             self.stats.game_active = True
+            self.game_over_flag = False
             self.enemys.empty()
             pygame.mouse.set_visible(False)
             self._create_enemys()
@@ -132,6 +135,17 @@ class BullFrog:
         if pygame.sprite.spritecollideany(self.player, self.enemys):
             self._player_hit()
 
+    def game_over(self):
+        """Game Over"""
+        self.stats.game_active = False
+        self.game_over_flag = True
+        pygame.mouse.set_visible(True)
+        pygame.mixer.music.stop()
+        self.stats.reset_stats()
+        self.settings.reset_background()
+        self.sb.prep_lives()
+        self.sb.prep_level()
+
     def _update_screen(self):
         """ things to be updated """
         # set the window background color
@@ -144,15 +158,13 @@ class BullFrog:
         self.sb.show_score()
 
         if self.stats.lives_left == 0:
-            self.stats.game_active = False
-            pygame.mouse.set_visible(True)
-            pygame.mixer.music.stop()
-            self.stats.reset_stats()
-            self.settings.reset_background()
-            self.sb.prep_lives()
-            self.sb.prep_level()
+            self.game_over()
 
-        if not self.stats.game_active:
+        if not self.stats.game_active and self.game_over_flag == True:
+            game_over_text = game_files.Game_Over(self)
+            game_over_text.draw_game_over()
+            self.play_button.draw_button()
+        elif not self.stats.game_active:
             self.play_button.draw_button()
         # draw a new screen
         pygame.display.flip()

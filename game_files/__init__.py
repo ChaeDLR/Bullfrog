@@ -5,3 +5,4 @@ from .game_stats import GameStats
 from .player import Player
 from .settings import Settings
 from .game_sound import GameSound
+from .game_over import Game_Over
