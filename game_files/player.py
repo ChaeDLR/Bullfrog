@@ -20,7 +20,7 @@ class Player(Sprite):
         # get rect
         self.rect = self.image.get_rect()
 
-        self.movement_speed = 5
+        self.movement_speed = 1.5
 
         # set player initial position
         self.rect.midbottom = self.screen_rect.midbottom
@@ -42,11 +42,14 @@ class Player(Sprite):
         # set player initial position
         self.rect.midbottom = self.screen_rect.midbottom
         self.y = float(self.rect.y)
+        self.x = float(self.rect.x)
 
     def check_position(self):
-        """ check player position """
+        """ check that the player position is in bounds """
         if self.rect.top < 31:
             return True
+        else:
+            return False
 
     def update_position(self):
         if self.rect.left > 0 and self.moving_left:
