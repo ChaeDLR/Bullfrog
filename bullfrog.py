@@ -23,6 +23,8 @@ class BullFrog:
         pygame.display.set_caption("Bullfrog")
         # enemy group
         self.enemys = pygame.sprite.Group()
+        self.gnats = pygame.sprite.Group()
+        self._load_custom_events()
         # pygame clock
         self.clock = pygame.time.Clock()
         # create enemys
@@ -37,6 +39,10 @@ class BullFrog:
         self._load_game_screens()
 
         self.game_over_flag = False
+
+    def _load_custom_events(self):
+        self.gnat_spawn_event = pygame.USEREVENT+1
+        self.gnat_despawn_event = pygame.USEREVENT+2
 
     def _load_game_screens(self):
         """ Load start and game over screens """
@@ -67,6 +73,12 @@ class BullFrog:
             elif event.type == pygame.MOUSEBUTTONDOWN and not self.stats.game_active:
                 mouse_pos = pygame.mouse.get_pos()
                 self._check_buttons(mouse_pos)
+            elif event.type == self.gnat_spawn_event and self.stats.game_active:
+                self._spawn_gnat()
+                pygame.time.set_timer(self.gnat_despawn_event, 2500, True)
+            elif event.type == self.gnat_despawn_event and self.stats.game_active:
+                self.gnats.empty()
+                pygame.time.set_timer(self.gnat_spawn_event, 5000, True)
 
     def _reset_game(self):
         """ Reset the game """
@@ -80,6 +92,7 @@ class BullFrog:
         self.player.reset_player()
         pygame.mixer.music.play()
         self.sb.prep_level()
+        pygame.time.set_timer(self.gnat_spawn_event, 5000)
 
     def _check_buttons(self, mouse_pos):
         """ respond if the play button has been pressed """
@@ -137,21 +150,16 @@ class BullFrog:
         self.sb.prep_level()
         time.sleep(0.5)
 
+    def _spawn_gnat(self):
+        """ spawn a gnat """
+        gnat = game_files.Gnat(self)
+        self.gnats.add(gnat)
+
     def _create_enemys(self):
         """ create enemys """
         for row_number in range(1, 5):
-            self._create_enemy(row_number)
-
-    def _create_enemy(self, row_number):
-        """ create enemy """
-        enemy = game_files.Enemy(self)
-        enemy.enemy_speed = random.randint(3, 8)
-        enemy.enemy_direction = random.choice((-1, 1))
-        enemy.y = row_number * 100
-        enemy.x = enemy.enemy_direction * enemy.enemy_speed + 300
-        enemy.rect.x = enemy.x
-        enemy.rect.y = enemy.y
-        self.enemys.add(enemy)
+            enemy = game_files.Enemy(self, row_number)
+            self.enemys.add(enemy)
 
     def _update_enemy(self):
         """ enemy updates """
@@ -185,6 +193,7 @@ class BullFrog:
         """ things to be updated """
         self.screen.fill(self.settings.bg_color)
         self.enemys.draw(self.screen)
+        self.gnats.draw(self.screen)
         self._update_player()
         self.sb.show_score()
 
