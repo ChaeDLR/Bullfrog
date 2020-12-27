@@ -1,5 +1,5 @@
 # Bullfrog
- Frogger clone in pygame.
+ Made with pygame.
 
 
 ### Installing Bullfrog
@@ -50,13 +50,11 @@ python -m venv (folder name)
 deactivate
 ```
 
-### Installing pygame on mac os
+### Installing pygame
 ___
 
-Regular installations of pygame may have problems on mac. Try this version of pygame instead. 
-
 ```
-pip install pygame==2.0.0.dev8
+pip install pygame
 ```
 
 ## Run the program
