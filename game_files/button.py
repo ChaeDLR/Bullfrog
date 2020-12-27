@@ -1,5 +1,6 @@
 import pygame.font
 from pygame import Surface
+from .colors import dark_teal, mustard
 
 
 class Button(Surface):
@@ -9,21 +10,19 @@ class Button(Surface):
         """ initialize button settings """
         self.width, self.height = 150, 50
         super(Button, self).__init__((self.width, self.height))
-
-        self.button_color = (84, 136, 165)
-        self.text_color = (16, 27, 33)
+        self.surface = surface
+        self.button_color = mustard
+        self.text_color = dark_teal
         # coords to set button to middle of screen
         self.button_mid_pos_x = (
             surface.width/2)-(self.width/2)
         self.button_mid_pos_y = (surface.height/3)*2
 
-        self.font = pygame.font.SysFont(None, 48, bold=True)
-
         # build the button rect and set it's position
         self.rect = pygame.Rect(0, 0, self.width, self.height)
         self.rect.x, self.rect.y = self.button_mid_pos_x, self.button_mid_pos_y
 
-        self._prep_msg(button_text)
+        self._prep_text(button_text)
 
         self.fill(self.button_color)
 
@@ -42,9 +41,14 @@ class Button(Surface):
 
         self.msg_image_rect.center = self.rect.center
 
-    def _prep_msg(self, text: str):
+    def _prep_text(self, text: str):
         """ prep the text to be rendered in the button """
-        self.msg_image = self.font.render(
+        font = pygame.font.SysFont(None, 48, bold=True)
+        self.msg_image = font.render(
             text, True, self.text_color, self.button_color)
         self.msg_image_rect = self.msg_image.get_rect()
         self.msg_image_rect.center = self.rect.center
+
+    def blitme(self):
+        self.surface.blit(self, self.rect)
+        self.surface.blit(self.msg_image, self.msg_image_rect)

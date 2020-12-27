@@ -1,0 +1,5 @@
+dark_teal = (63, 113, 106)
+light_teal = (87, 156, 135)
+orange = (255, 152, 55)
+mustard = (252, 202, 70)
+olive_green = (161, 193, 95)

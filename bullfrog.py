@@ -121,7 +121,6 @@ class BullFrog:
         if self.player.check_position():
             self.enemys.empty()
             self.stats.level += 1
-            self.settings.change_bg_color()
             self.sb.prep_level()
             self.player.reset_player()
             self._create_enemys()
@@ -169,7 +168,6 @@ class BullFrog:
         pygame.mouse.set_visible(True)
         pygame.mixer.music.stop()
         self.stats.reset_stats()
-        self.settings.reset_background()
         self.sb.prep_lives()
         self.sb.prep_level()
 
