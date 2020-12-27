@@ -21,9 +21,7 @@ class BullFrog:
             self.settings.screen_width, self.settings.screen_height))
         # set caption
         pygame.display.set_caption("Bullfrog")
-        # enemy group
-        self.enemys = pygame.sprite.Group()
-        self.gnats = pygame.sprite.Group()
+        self._load_sprite_groups()
         self._load_custom_events()
         # pygame clock
         self.clock = pygame.time.Clock()
@@ -40,9 +38,16 @@ class BullFrog:
 
         self.game_over_flag = False
 
+    def _load_sprite_groups(self):
+        self.enemys = pygame.sprite.Group()
+        self.gnats = pygame.sprite.Group()
+        self.lasers = pygame.sprite.Group()
+
     def _load_custom_events(self):
         self.gnat_spawn_event = pygame.USEREVENT+1
         self.gnat_despawn_event = pygame.USEREVENT+2
+        self.laser_spawn_event = pygame.USEREVENT+3
+        self.laser_despawn_event = pygame.USEREVENT+4
 
     def _load_game_screens(self):
         """ Load start and game over screens """
@@ -75,10 +80,14 @@ class BullFrog:
                 self._check_buttons(mouse_pos)
             elif event.type == self.gnat_spawn_event and self.stats.game_active:
                 self._spawn_gnat()
-                pygame.time.set_timer(self.gnat_despawn_event, 2500, True)
+                pygame.time.set_timer(self.gnat_despawn_event, 1000, True)
+                pygame.time.set_timer(self.laser_spawn_event, 700, True)
             elif event.type == self.gnat_despawn_event and self.stats.game_active:
                 self.gnats.empty()
-                pygame.time.set_timer(self.gnat_spawn_event, 5000, True)
+                pygame.time.set_timer(self.gnat_spawn_event, 1500, True)
+            elif event.type == self.laser_spawn_event:
+                laser = game_files.Laser(self.gnat_position)
+                self.lasers.add(laser)
 
     def _reset_game(self):
         """ Reset the game """
@@ -92,7 +101,7 @@ class BullFrog:
         self.player.reset_player()
         pygame.mixer.music.play()
         self.sb.prep_level()
-        pygame.time.set_timer(self.gnat_spawn_event, 5000)
+        pygame.time.set_timer(self.gnat_spawn_event, 2000)
 
     def _check_buttons(self, mouse_pos):
         """ respond if the play button has been pressed """
@@ -148,11 +157,14 @@ class BullFrog:
         self.stats.lives_left -= 1
         self.sb.prep_lives()
         self.sb.prep_level()
+        self.lasers.empty()
+        self.gnats.empty()
         time.sleep(0.5)
 
     def _spawn_gnat(self):
         """ spawn a gnat """
-        gnat = game_files.Gnat(self)
+        gnat = game_files.Gnat()
+        self.gnat_position = [gnat.x, gnat.y]
         self.gnats.add(gnat)
 
     def _create_enemys(self):
@@ -164,9 +176,12 @@ class BullFrog:
     def _update_enemy(self):
         """ enemy updates """
         self.enemys.update()
+        self.lasers.update()
         for enemy in self.enemys.sprites():
             enemy.check_edges()
         if pygame.sprite.spritecollideany(self.player, self.enemys):
+            self._player_hit()
+        elif pygame.sprite.spritecollideany(self.player, self.lasers):
             self._player_hit()
 
     def _stop_game(self):
@@ -194,6 +209,7 @@ class BullFrog:
         self.screen.fill(self.settings.bg_color)
         self.enemys.draw(self.screen)
         self.gnats.draw(self.screen)
+        self.lasers.draw(self.screen)
         self._update_player()
         self.sb.show_score()
 

@@ -7,3 +7,4 @@ from .game_sound import GameSound
 from .game_over import Game_Over
 from .main_menu import MainMenu
 from .gnat import Gnat
+from .laser import Laser
