@@ -9,10 +9,10 @@ class Player(Sprite):
     def __init__(self, bullfrog):
         # initialize the inherited variables
         super().__init__()
-        self.screen = frogger.screen
-        self.settings = frogger.settings
+        self.screen = bullfrog.screen
+        self.settings = bullfrog.settings
 
-        self.screen_rect = frogger.screen.get_rect()
+        self.screen_rect = bullfrog.screen.get_rect()
         self._load_player_image()
         # get rect
         self.rect = self.image.get_rect()
