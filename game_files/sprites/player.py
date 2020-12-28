@@ -4,14 +4,11 @@ from pygame.sprite import Sprite
 
 
 class Player(Sprite):
-    """ player class """
+    """ player sprite class """
 
-    def __init__(self, frogger):
-        """ initialize player """
-
+    def __init__(self, bullfrog):
         # initialize the inherited variables
         super().__init__()
-
         self.screen = frogger.screen
         self.settings = frogger.settings
 
@@ -75,7 +72,3 @@ class Player(Sprite):
     def _move_right(self):
         self.x += self.movement_speed
         self.rect.x = self.x
-
-    def blitme(self):
-        """ blit the player """
-        self.screen.blit(self.image, self.rect)

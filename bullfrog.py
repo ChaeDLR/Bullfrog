@@ -78,6 +78,7 @@ class BullFrog:
             elif event.type == pygame.MOUSEBUTTONDOWN and not self.stats.game_active:
                 mouse_pos = pygame.mouse.get_pos()
                 self._check_buttons(mouse_pos)
+            # spawn a Gnat enemy
             elif event.type == self.gnat_spawn_event and self.stats.game_active:
                 self._spawn_gnat()
                 pygame.time.set_timer(self.gnat_despawn_event, 1000, True)
@@ -85,8 +86,9 @@ class BullFrog:
             elif event.type == self.gnat_despawn_event and self.stats.game_active:
                 self.gnats.empty()
                 pygame.time.set_timer(self.gnat_spawn_event, 1500, True)
-            elif event.type == self.laser_spawn_event:
-                laser = game_files.Laser(self.gnat_position)
+            # spawn a laser
+            elif event.type == self.laser_spawn_event and self.stats.game_active:
+                laser = game_files.Laser(self.gnat_x_y_dir)
                 self.lasers.add(laser)
 
     def _reset_game(self):
@@ -139,7 +141,7 @@ class BullFrog:
     def _update_player(self):
         """ player values that need to be updated """
         self.player.update_position()
-        self.player.blitme()
+        self.screen.blit(self.player.image, self.player.rect)
         if self.player.check_position():
             self.enemys.empty()
             self.gnats.empty()
@@ -165,14 +167,15 @@ class BullFrog:
 
     def _spawn_gnat(self):
         """ spawn a gnat """
-        gnat = game_files.Gnat()
-        self.gnat_position = [gnat.x, gnat.y]
+        gnat = game_files.Gnat(
+            (self.settings.screen_width, self.settings.screen_height))
+        self.gnat_x_y_dir = [gnat.x, gnat.y, gnat.get_direction()]
         self.gnats.add(gnat)
 
     def _create_enemys(self):
         """ create enemys """
         for row_number in range(1, 5):
-            enemy = game_files.Enemy(self, row_number)
+            enemy = game_files.Enemy(self.settings.screen_width, row_number)
             self.enemys.add(enemy)
 
     def _update_enemy(self):
