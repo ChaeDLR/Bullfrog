@@ -8,7 +8,7 @@ class Laser(Sprite):
         super().__init__()
 
         self.image = pygame.image.load(os.path.join(
-            os.path.dirname(__file__), "assets/laser.png"))
+            os.path.dirname(__file__), "sprite_images/laser.png"))
 
         self.rect = self.image.get_rect()
         self.rect.x = x_y[0] + 16

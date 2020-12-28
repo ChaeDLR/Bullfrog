@@ -35,7 +35,7 @@ class Player(Sprite):
         # set player image
         path = os.path.dirname(__file__)
         self.image = pygame.image.load(
-            os.path.join(path, 'assets/player_ship.png'))
+            os.path.join(path, 'sprite_images/player_ship.png'))
 
     def reset_player(self):
         """ reset player position """

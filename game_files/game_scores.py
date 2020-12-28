@@ -1,6 +1,6 @@
 import pygame.font
 from pygame.sprite import Group
-from .player import Player
+from .sprites.player import Player
 
 
 class Scoreboard:

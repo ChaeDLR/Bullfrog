@@ -1,6 +1,6 @@
 import pygame.font
 from pygame import Surface
-from .colors import dark_teal, mustard
+from ..colors import dark_teal, mustard
 
 
 class Button(Surface):

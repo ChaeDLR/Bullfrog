@@ -142,6 +142,8 @@ class BullFrog:
         self.player.blitme()
         if self.player.check_position():
             self.enemys.empty()
+            self.gnats.empty()
+            self.lasers.empty()
             self.stats.level += 1
             self.sb.prep_level()
             self.player.reset_player()

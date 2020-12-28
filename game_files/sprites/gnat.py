@@ -40,5 +40,6 @@ class Gnat(Sprite):
 
     def _load_gnat_image(self):
         path = os.path.dirname(__file__)
-        self.image = pygame.image.load(os.path.join(path, 'assets/gnat.png'))
+        self.image = pygame.image.load(
+            os.path.join(path, 'sprite_images/gnat.png'))
         self.rect = self.image.get_rect()

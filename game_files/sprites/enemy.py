@@ -24,7 +24,7 @@ class Enemy(Sprite):
     def _load_enemy_image(self):
         path = os.path.dirname(__file__)
         self.image = pygame.image.load(
-            os.path.join(path, 'assets/enemy_ship.png'))
+            os.path.join(path, 'sprite_images/enemy_ship.png'))
 
     def check_edges(self):
         """ make sure player is in screen bounds """
