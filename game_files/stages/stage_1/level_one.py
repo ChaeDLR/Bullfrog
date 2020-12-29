@@ -87,7 +87,7 @@ class LevelOne(Surface):
                 self.gnats.empty()
                 pygame.time.set_timer(self.gnat_spawn_event, 1500, True)
             # spawn a laser
-            elif event.type == self.laser_spawn_event and self.game_stats.game_active:
+            elif event.type == self.laser_spawn_event and self.game_stats.game_active and self.gnats.sprites():
                 laser = Laser(self.gnat_x_y_dir)
                 self.lasers.add(laser)
 
@@ -130,8 +130,6 @@ class LevelOne(Surface):
         self.player.reset_player()
         self.game_stats.lives_left -= 1
         self._update_ui()
-        self.lasers.empty()
-        self.gnats.empty()
         if self.game_stats.lives_left == 0:
             self._game_over()
         pygame.time.set_timer(self.gnat_spawn_event, 1500, True)
@@ -194,17 +192,20 @@ class LevelOne(Surface):
             enemy.check_edges()
             self.blit(enemy.image, enemy.rect)
 
+    def _next_level(self):
+        self._empty_sprite_groups()
+        self.game_stats.level += 1
+        self._update_ui()
+        self.player.reset_player()
+        self._create_basic_enemies()
+        pygame.time.set_timer(self.gnat_spawn_event, 1500, True)
+        time.sleep(0.2)
+
     def _update_player(self):
         self.player.update_position()
         self.blit(self.player.image, self.player.rect)
         if self.player.check_position():
-            self._empty_sprite_groups()
-            self.game_stats.level += 1
-            self._update_ui()
-            self.player.reset_player()
-            self._create_basic_enemies()
-            pygame.time.set_timer(self.gnat_spawn_event, 1500, True)
-            time.sleep(0.2)
+            self._next_level()
 
     def _update_ui(self):
         self.game_ui.update_level()
