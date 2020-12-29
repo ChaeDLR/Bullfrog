@@ -1,8 +1,9 @@
 from pygame import Surface
 from pygame import Rect
+from pygame.sprite import Sprite
 
 
-class Wall(Surface):
+class Wall(Sprite):
     """
         Wall object size of width, height args
         Stops player from moving 
@@ -14,15 +15,16 @@ class Wall(Surface):
             x_y: tuple (x_position, y_position)
         """
         self.width, self.height = w_h[0], w_h[1]
-        super(Wall, self).__init__((self.width, self.height))
+        super().__init__()
 
-        self._build_button(x_y[0], x_y[1])
+        self._build_wall(x_y[0], x_y[1])
 
-    def _build_button(self, x: int, y: int):
-        self.rect = Rect(0, 0, self.width, self.height)
+    def _build_wall(self, x: int, y: int):
+        self.image = Surface((self.width, self.height))
+        self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.fill((10, 10, 10))
+        self.image.fill((10, 10, 10))
 
     def set_position(self, x_pos=None, y_pos=None):
         """ Set the position of the wall """

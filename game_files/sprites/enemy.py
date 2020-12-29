@@ -8,7 +8,9 @@ class Enemy(Sprite):
     """ enemy class """
 
     def __init__(self, screen_w: int, row_number: int):
-        """ initialize enemy """
+        """ screen_w: (screen_width: int)
+            row_number: ()
+        """
         super().__init__()
         self._load_enemy_image()
         self.screen_width = screen_w

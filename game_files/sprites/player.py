@@ -6,15 +6,12 @@ from pygame.sprite import Sprite
 class Player(Sprite):
     """ player sprite class """
 
-    def __init__(self, bullfrog):
-        # initialize the inherited variables
+    def __init__(self, level_surface):
         super().__init__()
-        self.screen = bullfrog.screen
-        self.settings = bullfrog.settings
-
-        self.screen_rect = bullfrog.screen.get_rect()
+        self.screen_rect = level_surface.rect
+        self.screen_rows = self.screen_rect.bottom/12
         self._load_player_image()
-        # get rect
+
         self.rect = self.image.get_rect()
 
         self.movement_speed = 4.0
@@ -51,18 +48,18 @@ class Player(Sprite):
     def update_position(self):
         if self.rect.left > 0 and self.moving_left:
             self._move_left()
-        elif self.rect.right < self.settings.screen_width and self.moving_right:
+        elif self.rect.right < self.screen_rect.right and self.moving_right:
             self._move_right()
 
     def move_forward(self):
         """ move player forward """
-        self.y -= self.settings.screen_rows
+        self.y -= self.screen_rows
         self.rect.y = self.y
 
     def move_backward(self):
         """ move player backward """
         if self.rect.bottom < self.screen_rect.bottom:
-            self.y += self.settings.screen_rows
+            self.y += self.screen_rows
         self.rect.y = self.y
 
     def _move_left(self):
