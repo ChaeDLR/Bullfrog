@@ -9,8 +9,10 @@ class Player(Sprite):
     def __init__(self, level_surface):
         super().__init__()
         self.screen_rect = level_surface.rect
-        self.screen_rows = self.screen_rect.bottom/12
+        self.screen_rows = self.screen_rect.bottom/14
         self._load_player_image()
+        self.player_hit = False
+        self.death_frame = 1
 
         self.rect = self.image.get_rect()
 
@@ -30,6 +32,10 @@ class Player(Sprite):
         path = os.path.dirname(__file__)
         self.image = pygame.image.load(
             os.path.join(path, 'sprite_images/player_ship.png'))
+        self.player_hit_images = [
+            self.image, pygame.image.load(os.path.join(
+                path, 'sprite_images/player_lighten.png'))
+        ]
 
     def reset_player(self):
         """ reset player position """
@@ -46,21 +52,24 @@ class Player(Sprite):
             return False
 
     def update_position(self):
-        if self.rect.left > 0 and self.moving_left:
-            self._move_left()
-        elif self.rect.right < self.screen_rect.right and self.moving_right:
-            self._move_right()
+        if not self.player_hit:
+            if self.rect.left > 0 and self.moving_left:
+                self._move_left()
+            elif self.rect.right < self.screen_rect.right and self.moving_right:
+                self._move_right()
 
     def move_forward(self):
         """ move player forward """
-        self.y -= self.screen_rows
-        self.rect.y = self.y
+        if not self.player_hit:
+            self.y -= self.screen_rows
+            self.rect.y = self.y
 
     def move_backward(self):
         """ move player backward """
-        if self.rect.bottom < self.screen_rect.bottom:
-            self.y += self.screen_rows
-        self.rect.y = self.y
+        if not self.player_hit:
+            if self.rect.bottom < self.screen_rect.bottom:
+                self.y += self.screen_rows
+            self.rect.y = self.y
 
     def _move_left(self):
         self.x -= self.movement_speed

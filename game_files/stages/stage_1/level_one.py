@@ -22,6 +22,7 @@ class LevelOne(Surface):
         self.rect = Rect(0, 0, width, height)
         self.width, self.height = width, height
         self.settings = settings
+        self.enemy_count = 6
 
         self._load_sprite_groups()
         self._load_environmnet()
@@ -44,6 +45,7 @@ class LevelOne(Surface):
         self.gnat_despawn_event = pygame.USEREVENT+2
         self.laser_spawn_event = pygame.USEREVENT+3
         self.laser_despawn_event = pygame.USEREVENT+4
+        self.player_hit = pygame.USEREVENT+5
 
     def _check_keydown_events(self, event):
         """ check for and respond to player input """
@@ -77,18 +79,25 @@ class LevelOne(Surface):
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP and self.game_stats.game_active:
                 self._check_keyup_events(event)
-            # spawn a Gnat enemy
-            elif event.type == self.gnat_spawn_event and self.game_stats.game_active:
-                self._spawn_gnat()
-                pygame.time.set_timer(self.gnat_despawn_event, 1000, True)
-                pygame.time.set_timer(self.laser_spawn_event, 700, True)
-            elif event.type == self.gnat_despawn_event and self.game_stats.game_active:
-                self.gnats.empty()
-                pygame.time.set_timer(self.gnat_spawn_event, 1500, True)
-            # spawn a laser
-            elif event.type == self.laser_spawn_event and self.game_stats.game_active and self.gnats.sprites():
-                laser = Laser(self.gnat_x_y_dir)
-                self.lasers.add(laser)
+            else:
+                self._check_custom_events(event)
+
+    def _check_custom_events(self, event):
+        # spawn a Gnat enemy
+        if event.type == self.player_hit and self.game_stats.game_active:
+            self._player_hit()
+        elif event.type == self.gnat_spawn_event and self.game_stats.game_active:
+            self._spawn_gnat()
+            pygame.time.set_timer(self.gnat_despawn_event, 1000, True)
+            pygame.time.set_timer(self.laser_spawn_event, 700, True)
+        # despawn gnat
+        elif event.type == self.gnat_despawn_event and self.game_stats.game_active:
+            self.gnats.empty()
+            pygame.time.set_timer(self.gnat_spawn_event, 1500, True)
+        # spawn a laser
+        elif event.type == self.laser_spawn_event and self.game_stats.game_active and self.gnats.sprites():
+            laser = Laser(self.gnat_x_y_dir)
+            self.lasers.add(laser)
 
     def _load_environmnet(self):
         """ Load the walls """
@@ -123,20 +132,20 @@ class LevelOne(Surface):
 
     def _player_hit(self):
         """ respond to the player getting hit """
-        self.game_sound.player_impact_sound.play()
+        # self.game_sound.player_impact_sound.play()
         self._empty_sprite_groups()
         self._create_basic_enemies()
         self.player.reset_player()
+        self.player.player_hit = False
         self.game_stats.lives_left -= 1
         self._update_ui()
         if self.game_stats.lives_left == 0:
             self._game_over()
         pygame.time.set_timer(self.gnat_spawn_event, 1500, True)
-        time.sleep(0.5)
 
     def _create_basic_enemies(self):
-        for i in range(1, 5):
-            basic_enemy = Enemy(self.width, i)
+        for i in range(1, self.enemy_count):
+            basic_enemy = Enemy((self.width, self.height), i)
             self.patrollers.add(basic_enemy)
 
     def _update_enemies(self):
@@ -164,11 +173,17 @@ class LevelOne(Surface):
             Check for collision between sprites
         """
         if pygame.sprite.spritecollideany(self.player, self.lasers):
-            self._player_hit()
+            self.game_sound.player_impact_sound.play()
+            self.player.player_hit = True
+            pygame.time.set_timer(self.player_hit, 500, True)
         if pygame.sprite.spritecollideany(self.player, self.patrollers):
-            self._player_hit()
+            self.game_sound.player_impact_sound.play()
+            self.player.player_hit = True
+            pygame.time.set_timer(self.player_hit, 500, True)
         if pygame.sprite.spritecollideany(self.player, self.walls):
-            self._player_hit()
+            self.game_sound.player_impact_sound.play()
+            self.player.player_hit = True
+            pygame.time.set_timer(self.player_hit, 500, True)
         for patroller in self.patrollers:
             if pygame.sprite.spritecollideany(patroller, self.walls):
                 patroller.change_direction()
@@ -201,11 +216,22 @@ class LevelOne(Surface):
         self.player.reset_player()
         self._create_basic_enemies()
         pygame.time.set_timer(self.gnat_spawn_event, 1500, True)
-        time.sleep(0.2)
+
+    def _show_player_hit(self):
+        if self.player.death_frame % 2 == 0:
+            self.blit(self.player.player_hit_images[0], self.player.rect)
+        else:
+            self.blit(self.player.player_hit_images[1], self.player.rect)
+        self.player.death_frame += 1
+        time.sleep(0.1)
 
     def _update_player(self):
-        self.player.update_position()
-        self.blit(self.player.image, self.player.rect)
+        if self.player.player_hit:
+            self._show_player_hit()
+        else:
+            self.player.update_position()
+            self.blit(self.player.image, self.player.rect)
+
         if self.player.check_position():
             self._next_level()
 
