@@ -30,13 +30,31 @@ class BullFrog:
         self.pause_menu = game_files.PauseMenu(
             self.settings.screen_width, self.settings.screen_height)
 
+        self.level_one = game_files.LevelOne(
+            self.settings.screen_width, self.settings.screen_height, self.settings, self.stats)
+
     def run_game(self):
         """ main loop """
         while True:
             self.clock.tick(60)
-            if self.stats.game_active == False:
+
+            if self.stats.game_paused:
+                self._check_paused_events()
+            elif self.stats.game_active == False:
                 self._check_events()
+
             self._update_screen()
+
+    def _check_paused_events(self):
+        """
+            Check for events on the pause screen
+        """
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self._check_buttons(mouse_pos)
 
     def _check_events(self):
         """ check for events """
@@ -54,36 +72,34 @@ class BullFrog:
 
     def _start_game(self):
         """ Reset the game """
-        self.level_one = game_files.LevelOne(
-            self.settings.screen_width, self.settings.screen_height, self.settings, self.stats)
         # reset game
         self.stats.game_active = True
         self.stats.game_over = False
         self.stats.active_level = 1
         pygame.mouse.set_visible(False)
+        pygame.mixer.music.play()
 
     def _unpause_game(self):
-        self.stats.game_paused = False
         self.stats.game_active = True
+        self.stats.game_paused = False
+        self.level_one.resume_game()
         pygame.mouse.set_visible(False)
 
     def _check_buttons(self, mouse_pos):
         """
             check of buttons on the game over screen or main menu are being pressed
         """
-        if self.game_over.check_buttons(mouse_pos) == 1 and self.stats.game_over:
-            self._start_game()
-        elif self.game_over.check_buttons(mouse_pos) == 2 and self.stats.game_over:
-            sys.exit()
-
-        if self.main_menu.check_buttons(mouse_pos) == 1:
-            self._start_game()
-        elif self.main_menu.check_buttons(mouse_pos) == 2:
-            sys.exit()
-
         if self.pause_menu.check_buttons(mouse_pos) == 1 and self.stats.game_paused:
             self._unpause_game()
         elif self.pause_menu.check_buttons(mouse_pos) == 2 and self.stats.game_paused:
+            sys.exit()
+        elif self.game_over.check_buttons(mouse_pos) == 1 and self.stats.game_over:
+            self._start_game()
+        elif self.game_over.check_buttons(mouse_pos) == 2 and self.stats.game_over:
+            sys.exit()
+        elif self.main_menu.check_buttons(mouse_pos) == 1:
+            self._start_game()
+        elif self.main_menu.check_buttons(mouse_pos) == 2:
             sys.exit()
 
     def _stop_game(self):
@@ -132,10 +148,14 @@ class BullFrog:
 
     def _update_screen(self):
         """ things to be updated """
-        self.screen.fill(self.settings.bg_color)
-        active_screen = self._active_screen()
-        active_screen.update()
-        self.screen.blit(active_screen, active_screen.rect)
+        if not self.stats.game_paused:
+            self.screen.fill(self.settings.bg_color)
+            active_screen = self._active_screen()
+            active_screen.update()
+            self.screen.blit(active_screen, active_screen.rect)
+        else:
+            self.pause_menu.update()
+            self.screen.blit(self.pause_menu, self.pause_menu.rect)
         pygame.display.flip()
 
 

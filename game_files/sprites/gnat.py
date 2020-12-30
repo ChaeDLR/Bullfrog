@@ -20,6 +20,16 @@ class Gnat(Sprite):
         self._rotate_image(self._get_angle(self.random_position))
         self._load_positions(x_pos_right)
         self._set_position(self.random_position)
+        self.time_born = pygame.time.get_ticks()
+
+    def check_life_length(self):
+        """
+            Return true if it should still exist
+            return false if it should be deleted
+        """
+        if (pygame.time.get_ticks()-self.time_born) < 1000:
+            return True
+        return False
 
     def _load_positions(self, x_pos_right: int):
         self.positions_list: list = [
