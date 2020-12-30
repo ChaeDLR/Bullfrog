@@ -9,6 +9,7 @@ class GameStats:
 
         self.active_level = 0
         self.game_over = False
+        self.game_paused = False
 
         self.reset_stats()
 

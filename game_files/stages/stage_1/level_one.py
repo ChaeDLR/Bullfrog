@@ -3,8 +3,8 @@ import pygame
 from ...colors import dark_teal, orange
 from ...sprites import Player, Enemy, Gnat, Laser
 from ...environment.wall import Wall
-from ...game_stats import GameStats
 from ...game_sound import GameSound
+from ...game_stats import GameStats
 from ...game_ui import Game_Ui
 import time
 import sys
@@ -48,7 +48,9 @@ class LevelOne(Surface):
     def _check_keydown_events(self, event):
         """ check for and respond to player input """
         if event.key == pygame.K_ESCAPE:
-            self._game_over()
+            self.game_stats.game_paused = True
+            self.game_stats.game_active = False
+            pygame.mouse.set_visible(True)
         elif event.key == pygame.K_UP:
             self.game_sound.player_movement_sound.play()
             self.player.move_forward()
@@ -75,9 +77,6 @@ class LevelOne(Surface):
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP and self.game_stats.game_active:
                 self._check_keyup_events(event)
-            elif event.type == pygame.MOUSEBUTTONDOWN and not self.game_stats.game_active:
-                mouse_pos = pygame.mouse.get_pos()
-                self._check_buttons(mouse_pos)
             # spawn a Gnat enemy
             elif event.type == self.gnat_spawn_event and self.game_stats.game_active:
                 self._spawn_gnat()
@@ -166,10 +165,13 @@ class LevelOne(Surface):
         """
         if pygame.sprite.spritecollideany(self.player, self.lasers):
             self._player_hit()
-        elif pygame.sprite.spritecollideany(self.player, self.patrollers):
+        if pygame.sprite.spritecollideany(self.player, self.patrollers):
             self._player_hit()
-        elif pygame.sprite.spritecollideany(self.player, self.walls):
+        if pygame.sprite.spritecollideany(self.player, self.walls):
             self._player_hit()
+        for patroller in self.patrollers:
+            if pygame.sprite.spritecollideany(patroller, self.walls):
+                patroller.change_direction()
 
     def _update_lasers(self):
         """
@@ -217,7 +219,6 @@ class LevelOne(Surface):
             self.blit(wall.image, wall.rect)
 
     def update(self):
-
         self.fill(self.background_color)
         self._check_events()
         self._check_collision()

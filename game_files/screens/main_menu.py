@@ -24,13 +24,6 @@ class MainMenu(Surface):
 
         self.play_button.set_position(y_pos=self.rect.height/2)
 
-    def check_buttons(self, mouse_pos):
-        if self.play_button.check_button(mouse_pos):
-            return 1
-        elif self.quit_button.check_button(mouse_pos):
-            return 2
-        return -1
-
     def _load_title(self):
         """ load game title """
         self.main_menu_img = self.font.render(
@@ -39,7 +32,14 @@ class MainMenu(Surface):
         self.main_menu_img_rect.midtop = self.rect.midtop
         self.main_menu_img_rect.y += 60
 
-    def draw_main_menu(self):
+    def check_buttons(self, mouse_pos):
+        if self.play_button.check_button(mouse_pos):
+            return 1
+        elif self.quit_button.check_button(mouse_pos):
+            return 2
+        return -1
+
+    def update(self):
         self.fill(self.background_color, self.rect)
         self.blit(self.main_menu_img, self.main_menu_img_rect)
         self.play_button.blitme()

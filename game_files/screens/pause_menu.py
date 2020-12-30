@@ -4,12 +4,13 @@ from .button import Button
 from ..colors import dark_teal, orange
 
 
-class Game_Over(Surface):
+class PauseMenu(Surface):
 
     def __init__(self, width: int, height: int):
-        super(Game_Over, self).__init__((width, height))
+        super(PauseMenu, self).__init__((width, height))
         self.background_color = dark_teal
         self.text_color = orange
+        self.font = pygame.font.SysFont(None, 50)
         self.rect = pygame.Rect(0, 0, width, height)
 
         self.width, self.height = width, height
@@ -18,29 +19,26 @@ class Game_Over(Surface):
         self._load_text()
 
     def _load_buttons(self):
-        self.play_button = Button(self, "Play")
+        self.resume_button = Button(self, "Resume")
         self.quit_button = Button(self, "Quit")
-
-        self.play_button.set_position(y_pos=self.rect.height/2)
+        self.resume_button.set_position(y_pos=(self.height/2))
 
     def _load_text(self):
-        font = pygame.font.SysFont(None, 50, bold=True)
-        self.game_over_img = font.render(
-            "Game Over", True, self.text_color, self.background_color)
-        self.game_over_img_rect = self.game_over_img.get_rect()
-        self.game_over_img_rect.midtop = self.rect.midtop
-        self.game_over_img_rect.y += 40
+        self.text_image = self.font.render(
+            "PAUSED", False, self.text_color, self.background_color)
+        self.text_image_rect = self.text_image.get_rect()
+        self.text_image_rect.midtop = self.rect.midtop
+        self.text_image_rect.y += 60
 
     def check_buttons(self, mouse_pos):
-        if self.play_button.check_button(mouse_pos):
+        if self.resume_button.check_button(mouse_pos):
             return 1
         elif self.quit_button.check_button(mouse_pos):
             return 2
-        return -1
+        return False
 
     def update(self):
-
         self.fill(self.background_color, self.rect)
-        self.blit(self.game_over_img, self.game_over_img_rect)
-        self.play_button.blitme()
+        self.blit(self.text_image, self.text_image_rect)
         self.quit_button.blitme()
+        self.resume_button.blitme()

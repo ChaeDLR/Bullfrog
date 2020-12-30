@@ -29,6 +29,9 @@ class Enemy(Sprite):
         self.image = pygame.image.load(
             os.path.join(path, 'sprite_images/enemy_ship.png'))
 
+    def change_direction(self):
+        self.enemy_direction = self.enemy_direction * -1
+
     def check_edges(self):
         """ make sure player is in screen bounds """
         if self.rect.right >= self.screen_width:
