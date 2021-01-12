@@ -43,7 +43,7 @@ class Button(Surface):
 
     def _prep_text(self, text: str):
         """ prep the text to be rendered in the button """
-        font = pygame.font.SysFont(None, 48, bold=True)
+        font = pygame.font.SysFont(None, 40, bold=True)
         self.msg_image = font.render(
             text, True, self.text_color, self.button_color)
         self.msg_image_rect = self.msg_image.get_rect()

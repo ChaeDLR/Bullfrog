@@ -48,6 +48,8 @@ class MainMenu(Surface):
             return 1
         elif self.quit_button.check_button(mouse_pos):
             return 2
+        elif self.settings_button.check_button(mouse_pos):
+            return 3
         return -1
 
     def update(self):

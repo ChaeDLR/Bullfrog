@@ -3,7 +3,6 @@ import pygame
 from ...colors import dark_teal, orange
 from ...sprites import Player, Enemy, Gnat, Laser
 from ...environment.wall import Wall
-from ...game_sound import GameSound
 from ...game_stats import GameStats
 from ...game_ui import Game_Ui
 import time
@@ -12,7 +11,7 @@ import sys
 
 class LevelOne(Surface):
 
-    def __init__(self, width: int, height: int, settings, stats):
+    def __init__(self, width: int, height: int, settings, stats, game_sound):
         """
             Bullfrog level one
         """
@@ -28,7 +27,7 @@ class LevelOne(Surface):
         self._load_environmnet()
         self._load_custom_events()
         self._load_sprites()
-        self.game_sound = GameSound()
+        self.game_sound = game_sound
 
         self.game_stats = stats
 
