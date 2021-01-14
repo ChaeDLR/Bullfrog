@@ -1,4 +1,5 @@
 from pygame.sprite import Sprite
+from pygame import Surface
 import os
 import pygame
 
@@ -10,9 +11,8 @@ class Laser(Sprite):
         """
         super().__init__()
 
-        self.image = pygame.image.load(os.path.join(
-            os.path.dirname(__file__), "sprite_images/laser.png"))
-
+        self.image = Surface((12, 28))
+        self.image.fill((250, 10, 10))
         self.rect = self.image.get_rect()
         self.rect.x = x_y_dir[0] + 16
         self.rect.y = x_y_dir[1] + 16
