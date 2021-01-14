@@ -23,6 +23,8 @@ class SettingsMenu(Surface):
 
         self.game_sound = game_sound
 
+        self.plus_pressed, self.minus_pressed = False, False
+
         self._load_images()
         self._load_title()
         self._load_options_text()
@@ -59,16 +61,18 @@ class SettingsMenu(Surface):
         """
         path = os.path.dirname(__file__)
         self.plus_image = pygame.image.load(os.path.join(path, 'menu_assets/plus.png'))
+        self.plus_filled_image = pygame.image.load(os.path.join(path, 'menu_assets/plus_filled.png'))
         self.minus_image = pygame.image.load(os.path.join(path, 'menu_assets/minus.png'))
+        self.minus_filled_image = pygame.image.load(os.path.join(path, 'menu_assets/minus_filled.png'))
 
         self.plus_image_rect = self.plus_image.get_rect()
         self.minus_image_rect = self.minus_image.get_rect()
 
-        self.plus_image_rect.bottom = (self.screen_rows*3)-32
-        self.minus_image_rect.top = (self.screen_rows*3)+32
+        self.plus_image_rect.bottom = (self.screen_rows*3)-8
+        self.minus_image_rect.top = (self.screen_rows*3)+8
 
-        self.plus_image_rect.x = self.screen_columns*4
-        self.minus_image_rect.x = self.screen_columns*4
+        self.plus_image_rect.x = self.screen_columns*3.2
+        self.minus_image_rect.x = self.screen_columns*3.2
 
     def _load_title(self):
         """ load settings title """
@@ -92,11 +96,26 @@ class SettingsMenu(Surface):
         elif self.back_button.check_button(mouse_pos):
             return 3
         return -1
+    
+    def _update_signs(self):
+        """
+            Update plus and minus signs
+        """
+        if self.plus_pressed:
+            self.blit(self.plus_image, self.plus_image_rect)
+            self.plus_pressed = False
+        else:
+            self.blit(self.plus_filled_image, self.plus_image_rect)
+
+        if self.minus_pressed:
+            self.blit(self.minus_image, self.minus_image_rect)
+            self.minus_pressed = False
+        else:
+            self.blit(self.minus_filled_image, self.minus_image_rect)
 
     def update(self):
         self.fill(self.background_color, self.rect)
         self.blit(self.settings_menu_img, self.settings_menu_img_rect)
-        self.blit(self.plus_image, self.plus_image_rect)
-        self.blit(self.minus_image, self.minus_image_rect)
+        self._update_signs()
         self.blit(self.music_volume_image, self.music_volume_image_rect)
         self.back_button.blitme()

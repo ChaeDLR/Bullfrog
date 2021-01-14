@@ -92,7 +92,6 @@ class BullFrog:
 
     def _start_game(self):
         """ Reset the game """
-        # reset game
         self._load_level_one()
         self.stats.main_menu_active = False
         self.stats.game_active = True
@@ -130,9 +129,11 @@ class BullFrog:
             self.stats.settings_menu_active
         """
         if self.settings_menu.check_buttons(mouse_pos) == 1:
+            self.settings_menu.plus_pressed = True
             self.game_sound.increase_music_volume()
             self.settings_menu.update_music_volume_string()
         elif self.settings_menu.check_buttons(mouse_pos) == 2:
+            self.settings_menu.minus_pressed = True
             self.game_sound.decrease_music_volume()
             self.settings_menu.update_music_volume_string()
         elif self.settings_menu.check_buttons(mouse_pos) == 3:
