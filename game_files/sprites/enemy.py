@@ -19,6 +19,11 @@ class Enemy(Sprite):
         self.enemy_speed = random.randint(3, 9)
         self._set_enemy_spawn(row_number)
 
+    def set_enemy_speed(self, speed_modifier: int):
+        self.enemy_speed = random.randint(
+            3 + speed_modifier, 9 + speed_modifier
+            )
+
     def _set_enemy_spawn(self, row: int):
         self.x = float(self.rect.x + (
             random.randint(5, self.screen_width-40)))

@@ -22,6 +22,8 @@ class LevelOne(Surface):
         self.width, self.height = width, height
         self.settings = settings
         self.enemy_count = 6
+        self.difficulty_tracker = 1
+        self.patroller_difficulty = 0
 
         self._load_sprite_groups()
         self._load_environmnet()
@@ -145,6 +147,7 @@ class LevelOne(Surface):
     def _create_basic_enemies(self):
         for i in range(1, self.enemy_count):
             basic_enemy = Enemy((self.width, self.height), i)
+            basic_enemy.set_enemy_speed(self.patroller_difficulty)
             self.patrollers.add(basic_enemy)
 
     def _update_enemies(self):
@@ -216,9 +219,14 @@ class LevelOne(Surface):
     def _next_level(self):
         self._empty_sprite_groups()
         self.game_stats.level += 1
+        self.difficulty_tracker += 1
         self._update_ui()
         self.player.reset_player()
         self._create_basic_enemies()
+        if self.difficulty_tracker == 5:
+            self.difficulty_tracker = 1
+            if self.patroller_difficulty < 3:
+                self.patroller_difficulty += 1
 
     def _show_player_hit(self):
         if self.player.death_frame % 2 == 0:
