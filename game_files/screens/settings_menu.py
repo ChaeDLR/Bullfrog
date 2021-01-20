@@ -4,6 +4,7 @@ from pygame import Surface
 from .button import Button
 from ..colors import dark_teal, orange
 
+
 class SettingsMenu(Surface):
     """
         Settings menu
@@ -29,13 +30,13 @@ class SettingsMenu(Surface):
         self._load_title()
         self._load_options_text()
         self._load_buttons()
-    
+
     def update_music_volume_string(self):
         music_volume_string = f'Music volume: {self.game_sound.music_volume_number}'
         font = pygame.font.SysFont(None, 38)
         self.music_volume_image = font.render(
             music_volume_string, True, self.text_color, self.background_color
-            )
+        )
 
     def _load_buttons(self):
         """
@@ -43,7 +44,7 @@ class SettingsMenu(Surface):
         """
         self.back_button = Button(self, "Back")
         self.back_button.set_position(self.screen_columns, self.screen_rows*5)
-    
+
     def _load_options_text(self):
         """
             Create available options text
@@ -53,17 +54,21 @@ class SettingsMenu(Surface):
         self.music_volume_image_rect = self.music_volume_image.get_rect()
         self.music_volume_image_rect.y = self.plus_image_rect.bottom
         self.music_volume_image_rect.x = self.screen_rows*2
-    
+
     def _load_images(self):
         """
             load minus.png and plus.png
             from assets folder and set positions
         """
         path = os.path.dirname(__file__)
-        self.plus_image = pygame.image.load(os.path.join(path, 'menu_assets/plus.png'))
-        self.plus_filled_image = pygame.image.load(os.path.join(path, 'menu_assets/plus_filled.png'))
-        self.minus_image = pygame.image.load(os.path.join(path, 'menu_assets/minus.png'))
-        self.minus_filled_image = pygame.image.load(os.path.join(path, 'menu_assets/minus_filled.png'))
+        self.plus_image = pygame.image.load(
+            os.path.join(path, 'menu_assets/plus.png'))
+        self.plus_filled_image = pygame.image.load(
+            os.path.join(path, 'menu_assets/plus_filled.png'))
+        self.minus_image = pygame.image.load(
+            os.path.join(path, 'menu_assets/minus.png'))
+        self.minus_filled_image = pygame.image.load(
+            os.path.join(path, 'menu_assets/minus_filled.png'))
 
         self.plus_image_rect = self.plus_image.get_rect()
         self.minus_image_rect = self.minus_image.get_rect()
@@ -83,7 +88,7 @@ class SettingsMenu(Surface):
         self.settings_menu_img_rect = self.settings_menu_img.get_rect()
         self.settings_menu_img_rect.midtop = self.rect.midtop
         self.settings_menu_img_rect.y += 60
-    
+
     def check_buttons(self, mouse_pos):
         """
             return 1 if plus sign is pressed
@@ -96,7 +101,7 @@ class SettingsMenu(Surface):
         elif self.back_button.check_button(mouse_pos):
             return 3
         return -1
-    
+
     def _update_signs(self):
         """
             Update plus and minus signs
