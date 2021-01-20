@@ -12,5 +12,6 @@ from .screens.game_over import Game_Over
 from .screens.main_menu import MainMenu
 from .screens.pause_menu import PauseMenu
 from .screens.settings_menu import SettingsMenu
+from .screens.new_high_score import NewHighScore
 
 from .stages.stage_1.level_one import LevelOne

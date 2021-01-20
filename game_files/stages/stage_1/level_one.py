@@ -125,6 +125,7 @@ class LevelOne(Surface):
 
     def _game_over(self):
         """ Reset the current level """
+        self.game_stats.set_high_score()
         self._empty_sprite_groups()
         self.game_stats.reset_stats()
         self.game_stats.game_active = False
