@@ -1,26 +1,25 @@
 from pygame import Surface, Rect, sprite
 import pygame
-from ...colors import dark_teal, orange
+from ...colors import dark_teal, orange, olive_green
 from ...sprites import Player, Enemy, Gnat, Laser
 from ...environment.wall import Wall
 from ...game_ui import Game_Ui
 import time
 import sys
 
-
-class LevelOne(Surface):
+class LevelTwo(Surface):
 
     def __init__(self, width: int, height: int, settings, stats, game_sound):
         """
-            Bullfrog level one
+            Bullfrog level two
         """
-        super(LevelOne, self).__init__((width, height))
-        self.background_color = dark_teal
+        super().__init__((width, height))
+        self.background_color = olive_green
         settings.bg_color = self.background_color
         self.rect = Rect(0, 0, width, height)
         self.width, self.height = width, height
         self.settings = settings
-        self.enemy_count = 6
+        self.enemy_count = 7
         self.difficulty_tracker = 1
         self.patroller_difficulty = 0
 
@@ -167,8 +166,7 @@ class LevelOne(Surface):
     def _spawn_gnat(self):
         """ spawn a gnat """
         gnat = Gnat(
-            (self.settings.screen_width, self.settings.screen_height)
-            )
+            (self.settings.screen_width, self.settings.screen_height))
         self.gnat_x_y_dir = [gnat.x, gnat.y, gnat.get_direction()]
         self.gnats.add(gnat)
 
@@ -221,16 +219,9 @@ class LevelOne(Surface):
         self.game_stats.level += 1
         self.difficulty_tracker += 1
         self._update_ui()
-        if self.game_stats.level == 10:
-            self.game_stats.active_level = 2
-            self.game_stats.set_active_screen(game_active=True)
         self.player.reset_player()
         self._create_basic_enemies()
-        self._check_difficulty()
-
-    def _check_difficulty(self):
-        """ Check if the difficulty of the enemies should be increased """
-        if self.difficulty_tracker == 2:
+        if self.difficulty_tracker == 5:
             self.difficulty_tracker = 1
             if self.patroller_difficulty < 3:
                 self.patroller_difficulty += 1

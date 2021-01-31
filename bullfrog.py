@@ -14,7 +14,8 @@ class BullFrog:
         pygame.init()
         self.settings = game_files.Settings()
         self.screen = pygame.display.set_mode(
-            (self.settings.screen_width, self.settings.screen_height))
+            (self.settings.screen_width, self.settings.screen_height)
+            )
         pygame.display.set_caption("Bullfrog")
         self.clock = pygame.time.Clock()
         self.stats = game_files.GameStats()
@@ -26,25 +27,32 @@ class BullFrog:
         """ Load start and game over screens """
         self.main_menu = game_files.MainMenu(
             self.settings.screen_width, self.settings.screen_height
-        )
+            )
         self.game_over = game_files.Game_Over(
             self.settings.screen_width, self.settings.screen_height
-        )
+            )
         self.pause_menu = game_files.PauseMenu(
             self.settings.screen_width, self.settings.screen_height
-        )
+            )
         self.settings_menu = game_files.SettingsMenu(
             self.settings.screen_width, self.settings.screen_height,
             self.game_sound
-        )
+            )
         self.new_high_score_screen = game_files.NewHighScore(
             self.settings.screen_width, self.settings.screen_height,
             self.stats
-        )
+            )
         self._load_level_one()
+        self.active_screen = self.main_menu
     
     def _load_level_one(self):
         self.level_one = game_files.LevelOne(
+            self.settings.screen_width, self.settings.screen_height, 
+            self.settings, self.stats, self.game_sound
+        )
+
+    def _load_level_two(self):
+        self.level_two = game_files.LevelTwo(
             self.settings.screen_width, self.settings.screen_height, 
             self.settings, self.stats, self.game_sound
         )
@@ -100,9 +108,7 @@ class BullFrog:
     def _start_game(self):
         """ Reset the game """
         self._load_level_one()
-        self.stats.main_menu_active = False
-        self.stats.game_active = True
-        self.stats.game_over = False
+        self.stats.set_active_screen(game_active=True)
         self.stats.active_level = 1
         pygame.mouse.set_visible(False)
         pygame.mixer.music.play()
@@ -170,35 +176,47 @@ class BullFrog:
         self.stats.game_active = False
         self.stats.game_over = True
         pygame.mouse.set_visible(True)
+    
+    def _get_active_level(self):
+        """ return the active level """
+        if self.stats.active_level == 1:
+            return self.level_one
+        elif self.stats.active_level == 2:
+            self._load_level_two()
+            return self.level_two
 
-    def _active_screen(self):
+    def _set_active_screen(self):
 
         if self.stats.lives_left == 0:
             self._stop_game()
-        elif self.stats.active_level == 1 and self.stats.game_active:
-            return self.level_one
+
+        elif self.stats.game_active:
+            self.active_screen = self._get_active_level()
 
         elif not self.stats.game_active and self.stats.game_over:
 
             if self.stats.new_high_score:
                 self.new_high_score_screen.set_high_score_img(self.stats.high_score)
-                return self.new_high_score_screen
+                self.active_screen = self.new_high_score_screen
             else:
-                return self.game_over
+                self.active_screen = self.game_over
 
         elif not self.stats.game_active and self.stats.settings_menu_active:
-            return self.settings_menu
+            self.active_screen = self.settings_menu
 
         elif not self.stats.game_active and self.stats.main_menu_active:
-            return self.main_menu
+            self.active_screen = self.main_menu
 
     def _update_screen(self):
         """ things to be updated """
+        if self.stats.change_screen:
+            self._set_active_screen()
+            self.stats.change_screen = False
+
         if not self.stats.game_paused:
             self.screen.fill(self.settings.bg_color)
-            active_screen = self._active_screen()
-            active_screen.update()
-            self.screen.blit(active_screen, active_screen.rect)
+            self.active_screen.update()
+            self.screen.blit(self.active_screen, self.active_screen.rect)
         else:
             self.pause_menu.update()
             self.screen.blit(self.pause_menu, self.pause_menu.rect)

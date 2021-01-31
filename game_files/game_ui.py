@@ -15,8 +15,8 @@ class Game_Ui:
         self.rect = self.screen_rect
 
         # text settings
-        self.text_color = (0, 51, 25)
-        self.text_font = pygame.font.SysFont(None, 38)
+        self.text_color = (200, 200, 200)
+        self.text_font = pygame.font.SysFont(None, 34)
 
         self.update_level()
         self.update_lives()

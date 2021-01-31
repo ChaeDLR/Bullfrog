@@ -12,6 +12,7 @@ class GameStats:
 
         self.active_level = 0
 
+        self.change_screen = False
         self.game_over = False
         self.game_paused = False
         self.settings_menu_active = False
@@ -54,6 +55,7 @@ class GameStats:
             
     
     def set_active_screen(self, game_over=False, game_paused=False, settings_menu=False, main_menu=False, game_active=False):
+        self.change_screen = True
         self.game_active = game_active
         self.game_over = game_over
         self.game_paused = game_paused

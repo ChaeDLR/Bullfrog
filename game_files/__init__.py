@@ -15,3 +15,4 @@ from .screens.settings_menu import SettingsMenu
 from .screens.new_high_score import NewHighScore
 
 from .stages.stage_1.level_one import LevelOne
+from .stages.stage_1.level_two import LevelTwo
