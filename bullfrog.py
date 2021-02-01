@@ -141,15 +141,24 @@ class BullFrog:
         """
             self.stats.settings_menu_active
         """
-        if self.settings_menu.check_buttons(mouse_pos) == 1:
-            self.settings_menu.plus_pressed = True
+        pressed_button = self.settings_menu.check_buttons(mouse_pos)
+        if pressed_button == 1:
+            self.settings_menu.music_plus_pressed = True
             self.game_sound.increase_music_volume()
             self.settings_menu.update_music_volume_string()
-        elif self.settings_menu.check_buttons(mouse_pos) == 2:
-            self.settings_menu.minus_pressed = True
+        elif pressed_button == 2:
+            self.settings_menu.music_minus_pressed = True
             self.game_sound.decrease_music_volume()
             self.settings_menu.update_music_volume_string()
-        elif self.settings_menu.check_buttons(mouse_pos) == 3:
+        elif pressed_button == 3:
+            self.settings_menu.effects_plus_pressed = True
+            self.game_sound.increase_effects_volume()
+            self.settings_menu.update_effects_volume_string()
+        elif pressed_button == 4:
+            self.settings_menu.effects_minus_pressed = True
+            self.game_sound.decrease_effects_volume()
+            self.settings_menu.update_effects_volume_string()
+        elif pressed_button == 5:
             self.stats.set_active_screen(main_menu=True)
 
     def _check_main_menu_buttons(self, mouse_pos):

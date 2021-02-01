@@ -10,8 +10,7 @@ class GameSound:
         self.music_volume, self.effects_volume = 0.1, 0.3
         # create a whole number to represent the decimals of the volumes
         # Used for creating the number image in settings menu
-        self.music_volume_number = 1
-        self.effects_volume_number = 3
+        self.music_volume_number, self.effects_volume_number = 1, 3
         self.set_music_volume(self.music_volume)
         self.set_effects_volume(self.effects_volume)
 

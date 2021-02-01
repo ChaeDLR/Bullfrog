@@ -1,4 +1,5 @@
 import pygame.font
+import pygame.transform
 import os
 from pygame import Surface
 from .button import Button
@@ -24,7 +25,8 @@ class SettingsMenu(Surface):
 
         self.game_sound = game_sound
 
-        self.plus_pressed, self.minus_pressed = False, False
+        self.music_plus_pressed, self.music_minus_pressed = False, False
+        self.effects_plus_pressed, self.effects_minus_pressed = False, False
 
         self._load_images()
         self._load_title()
@@ -36,6 +38,13 @@ class SettingsMenu(Surface):
         font = pygame.font.SysFont(None, 38)
         self.music_volume_image = font.render(
             music_volume_string, True, self.text_color, self.background_color
+        )
+
+    def update_effects_volume_string(self):
+        effects_volume_string = f'Effects volume: {self.game_sound.effects_volume_number}'
+        font = pygame.font.SysFont(None, 38)
+        self.effects_volume_image = font.render(
+            effects_volume_string, True, self.text_color, self.background_color
         )
 
     def _load_buttons(self):
@@ -51,9 +60,14 @@ class SettingsMenu(Surface):
             Set position
         """
         self.update_music_volume_string()
+        self.update_effects_volume_string()
         self.music_volume_image_rect = self.music_volume_image.get_rect()
-        self.music_volume_image_rect.y = self.plus_image_rect.bottom
+        self.music_volume_image_rect.y = (self.screen_rows*2.5)+20
         self.music_volume_image_rect.x = self.screen_rows*2
+
+        self.effects_volume_image_rect = self.effects_volume_image.get_rect()
+        self.effects_volume_image_rect.y = (self.screen_rows*3)+20
+        self.effects_volume_image_rect.x = self.screen_rows*2
 
     def _load_images(self):
         """
@@ -61,23 +75,59 @@ class SettingsMenu(Surface):
             from assets folder and set positions
         """
         path = os.path.dirname(__file__)
-        self.plus_image = pygame.image.load(
+        self._load_music_images(path)
+        self._load_effects_images(path)
+        self._set_image_position()
+
+    def _load_effects_images(self, path: str):
+        self.effects_plus_image = pygame.image.load(
             os.path.join(path, 'menu_assets/plus.png'))
-        self.plus_filled_image = pygame.image.load(
+        self.effects_plus_filled_image = pygame.image.load(
             os.path.join(path, 'menu_assets/plus_filled.png'))
-        self.minus_image = pygame.image.load(
+        self.effects_minus_image = pygame.image.load(
             os.path.join(path, 'menu_assets/minus.png'))
-        self.minus_filled_image = pygame.image.load(
+        self.effects_minus_filled_image = pygame.image.load(
             os.path.join(path, 'menu_assets/minus_filled.png'))
 
-        self.plus_image_rect = self.plus_image.get_rect()
-        self.minus_image_rect = self.minus_image.get_rect()
+        self.effects_plus_image = pygame.transform.scale(self.effects_plus_image, (16, 16))
+        self.effects_plus_filled_image = pygame.transform.scale(self.effects_plus_filled_image, (16, 16))
+        self.effects_minus_image = pygame.transform.scale(self.effects_minus_image, (16, 16))
+        self.effects_minus_filled_image = pygame.transform.scale(self.effects_minus_filled_image, (16, 16))
 
-        self.plus_image_rect.bottom = (self.screen_rows*3)-8
-        self.minus_image_rect.top = (self.screen_rows*3)+8
+        self.effects_plus_image_rect = self.effects_plus_image.get_rect()
+        self.effects_minus_image_rect = self.effects_minus_image.get_rect()
 
-        self.plus_image_rect.x = self.screen_columns*3.2
-        self.minus_image_rect.x = self.screen_columns*3.2
+    def _load_music_images(self, path: str):
+        self.music_plus_image = pygame.image.load(
+            os.path.join(path, 'menu_assets/plus.png'))
+        self.music_plus_filled_image = pygame.image.load(
+            os.path.join(path, 'menu_assets/plus_filled.png'))
+        self.music_minus_image = pygame.image.load(
+            os.path.join(path, 'menu_assets/minus.png'))
+        self.music_minus_filled_image = pygame.image.load(
+            os.path.join(path, 'menu_assets/minus_filled.png'))
+
+        self.music_plus_image = pygame.transform.scale(self.music_plus_image, (16, 16))
+        self.music_plus_filled_image = pygame.transform.scale(self.music_plus_filled_image, (16, 16))
+        self.music_minus_image = pygame.transform.scale(self.music_minus_image, (16, 16))
+        self.music_minus_filled_image = pygame.transform.scale(self.music_minus_filled_image, (16, 16))
+
+        self.music_plus_image_rect = self.music_plus_image.get_rect()
+        self.music_minus_image_rect = self.music_minus_image.get_rect()
+    
+    def _set_image_position(self):
+        """ set image positions """
+        self.music_plus_image_rect.y = (self.screen_rows*2.5)+16
+        self.music_minus_image_rect.y = (self.screen_rows*2.5)+32
+
+        self.music_plus_image_rect.x = self.screen_columns*3.4
+        self.music_minus_image_rect.x = self.screen_columns*3.4
+
+        self.effects_plus_image_rect.y = (self.screen_rows*3)+16
+        self.effects_minus_image_rect.y = (self.screen_rows*3)+32
+
+        self.effects_plus_image_rect.x = self.screen_columns*3.4
+        self.effects_minus_image_rect.x = self.screen_columns*3.4
 
     def _load_title(self):
         """ load settings title """
@@ -91,36 +141,60 @@ class SettingsMenu(Surface):
 
     def check_buttons(self, mouse_pos):
         """
-            return 1 if plus sign is pressed
-            return 2 if minus is pressed
+            return 1 if music plus sign is pressed
+            return 2 if music minus is pressed
+            return 3 if effects plus is pressed
+            return 4 if effects minus is pressed
         """
-        if self.plus_image_rect.collidepoint(mouse_pos):
+        if self.music_plus_image_rect.collidepoint(mouse_pos):
             return 1
-        elif self.minus_image_rect.collidepoint(mouse_pos):
+        elif self.music_minus_image_rect.collidepoint(mouse_pos):
             return 2
-        elif self.back_button.check_button(mouse_pos):
+        elif self.effects_plus_image_rect.collidepoint(mouse_pos):
             return 3
+        elif self.effects_minus_image_rect.collidepoint(mouse_pos):
+            return 4
+        elif self.back_button.check_button(mouse_pos):
+            return 5
         return -1
 
     def _update_signs(self):
         """
             Update plus and minus signs
         """
-        if self.plus_pressed:
-            self.blit(self.plus_image, self.plus_image_rect)
-            self.plus_pressed = False
-        else:
-            self.blit(self.plus_filled_image, self.plus_image_rect)
+        self._update_music_signs()
+        self._update_effects_signs()
 
-        if self.minus_pressed:
-            self.blit(self.minus_image, self.minus_image_rect)
-            self.minus_pressed = False
+    def _update_effects_signs(self):
+        if self.effects_plus_pressed:
+            self.blit(self.effects_plus_image, self.effects_plus_image_rect)
+            self.effects_plus_pressed = False
         else:
-            self.blit(self.minus_filled_image, self.minus_image_rect)
+            self.blit(self.effects_plus_filled_image, self.effects_plus_image_rect)
+
+        if self.effects_minus_pressed:
+            self.blit(self.effects_minus_image, self.effects_minus_image_rect)
+            self.effects_minus_pressed = False
+        else:
+            self.blit(self.effects_minus_filled_image, self.effects_minus_image_rect)
+
+    def _update_music_signs(self):
+        if self.music_plus_pressed:
+            self.blit(self.music_plus_image, self.music_plus_image_rect)
+            self.music_plus_pressed = False
+        else:
+            self.blit(self.music_plus_filled_image, self.music_plus_image_rect)
+
+        if self.music_minus_pressed:
+            self.blit(self.music_minus_image, self.music_minus_image_rect)
+            self.music_minus_pressed = False
+        else:
+            self.blit(self.music_minus_filled_image, self.music_minus_image_rect)
 
     def update(self):
         self.fill(self.background_color, self.rect)
         self.blit(self.settings_menu_img, self.settings_menu_img_rect)
         self._update_signs()
         self.blit(self.music_volume_image, self.music_volume_image_rect)
+        self.blit(self.effects_volume_image, self.effects_volume_image_rect)
         self.back_button.blitme()
