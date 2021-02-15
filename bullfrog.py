@@ -160,6 +160,8 @@ class BullFrog:
             self.settings_menu.update_effects_volume_string()
         elif pressed_button == 5:
             self.stats.set_active_screen(main_menu=True)
+        elif pressed_button == 6:
+            self.game_sound.save_volumes()
 
     def _check_main_menu_buttons(self, mouse_pos):
         """

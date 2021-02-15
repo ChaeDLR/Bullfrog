@@ -1,6 +1,7 @@
 import json
 import os
 
+
 class GameStats:
     """ track and control game stats """
 
@@ -21,25 +22,26 @@ class GameStats:
 
         self.reset_stats()
         self._read_high_score()
-    
+
     def _read_high_score(self):
         """
             Check if the high_score dir exists
             If it does, read the high score from the json file
         """
+
         directory = f"{os.getcwd()}/Stats_data"
         if os.path.isdir(directory):
             with open(f'{directory}/high_score.json', 'r') as extracted_high_score:
                 previous_high_score = json.load(extracted_high_score)
             extracted_high_score.close()
             self.high_score = previous_high_score['high_score']
-    
+
     def set_high_score(self):
         """
             Make the Stats_data dir if needed.
             If there is a new high score, write to json.
         """
-        directory = f"{os.getcwd()}\Stats_data"
+        directory = f"{os.getcwd()}/Stats_data"
         if not os.path.isdir(directory):
             os.mkdir(directory)
 
@@ -52,8 +54,7 @@ class GameStats:
             with open(f'{directory}/high_score.json', 'w') as hs_json_file:
                 json.dump(high_score_json_data, hs_json_file, indent=4)
             hs_json_file.close()
-            
-    
+
     def set_active_screen(self, game_over=False, game_paused=False, settings_menu=False, main_menu=False, game_active=False):
         self.change_screen = True
         self.game_active = game_active
