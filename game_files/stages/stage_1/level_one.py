@@ -56,9 +56,9 @@ class LevelOne(Surface):
             self.game_sound.player_movement_sound.play()
             self.player.move_backward()
         elif event.key == pygame.K_LEFT:
-            self.player.moving_left = True
+            self.player.move_left()
         elif event.key == pygame.K_RIGHT:
-            self.player.moving_right = True
+            self.player.move_right()
 
     def _check_keyup_events(self, event):
         if event.key == pygame.K_LEFT:
@@ -247,7 +247,6 @@ class LevelOne(Surface):
         if self.player.player_hit:
             self._show_player_hit()
         else:
-            self.player.update_position()
             self.blit(self.player.image, self.player.rect)
 
         if self.player.check_position():

@@ -16,7 +16,7 @@ class Player(Sprite):
 
         self.rect = self.image.get_rect()
 
-        self.movement_speed = 4.0
+        self.movement_speed = 64.0
 
         # set player initial position
         self.rect.midbottom = self.screen_rect.midbottom
@@ -51,13 +51,6 @@ class Player(Sprite):
         else:
             return False
 
-    def update_position(self):
-        if not self.player_hit:
-            if self.rect.left > 0 and self.moving_left:
-                self._move_left()
-            elif self.rect.right < self.screen_rect.right and self.moving_right:
-                self._move_right()
-
     def move_forward(self):
         """ move player forward """
         if not self.player_hit:
@@ -71,10 +64,17 @@ class Player(Sprite):
                 self.y += self.screen_rows
             self.rect.y = self.y
 
-    def _move_left(self):
-        self.x -= self.movement_speed
-        self.rect.x = self.x
+    def move_left(self):
+        if not self.player_hit and (self.x-self.movement_speed) >= 0:
+            self.x -= self.movement_speed
+            self.rect.x = self.x
+        elif not self.player_hit:
+            self.x = 0
+            self.rect.x = self.x
 
-    def _move_right(self):
-        self.x += self.movement_speed
-        self.rect.x = self.x
+    def move_right(self):
+        if not self.player_hit and (self.x+self.movement_speed) <= self.screen_rect.right:
+            self.x += self.movement_speed
+            self.rect.x = self.x
+        elif not self.player_hit:
+            self.rect.right = self.screen_rect.right
