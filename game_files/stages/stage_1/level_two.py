@@ -1,11 +1,12 @@
 from pygame import Surface, Rect, sprite
 import pygame
 from ...colors import dark_teal, orange, olive_green
-from ...sprites import Player, Enemy, Gnat, Laser
+from ...sprites import Player, Enemy, Gnat, Laser, PatrollerGnat
 from ...environment.wall import Wall
 from ...game_ui import Game_Ui
 import time
 import sys
+
 
 class LevelTwo(Surface):
 
@@ -35,6 +36,7 @@ class LevelTwo(Surface):
         self.game_ui = Game_Ui(self, settings, self.game_stats)
 
         pygame.time.set_timer(self.gnat_spawn_event, 1500)
+        pygame.time.set_timer(self.pat_gnat_laser_event, 2000)
 
     def _load_custom_events(self):
         self.gnat_spawn_event = pygame.USEREVENT+1
@@ -43,6 +45,7 @@ class LevelTwo(Surface):
         self.laser_despawn_event = pygame.USEREVENT+4
         self.player_hit = pygame.USEREVENT+5
         self.unpause_game = pygame.USEREVENT+6
+        self.pat_gnat_laser_event = pygame.USEREVENT+7
 
     def _check_keydown_events(self, event):
         """ check for and respond to player input """
@@ -87,6 +90,13 @@ class LevelTwo(Surface):
         elif event.type == self.laser_spawn_event and self.game_stats.game_active and self.gnats.sprites():
             laser = Laser(self.gnat_x_y_dir)
             self.lasers.add(laser)
+        elif event.type == self.pat_gnat_laser_event and self.game_stats.game_active:
+
+            pos_dir_list = [self.patroller_gnats.sprites()[0].rect.x,
+                            self.patroller_gnats.sprites()[0].rect.y, 1]
+            laser = Laser(pos_dir_list, 1)
+            self.pat_gnat_lasers.add(laser)
+
         elif event.type == self.unpause_game:
             pygame.mixer.music.unpause()
 
@@ -115,11 +125,15 @@ class LevelTwo(Surface):
         self.gnats = sprite.Group()
         self.lasers = sprite.Group()
         self.walls = sprite.Group()
+        self.patroller_gnats = sprite.Group()
+        self.pat_gnat_lasers = sprite.Group()
 
     def _empty_sprite_groups(self):
         self.patrollers.empty()
         self.gnats.empty()
         self.lasers.empty()
+        self.patroller_gnats.empty()
+        self.pat_gnat_lasers.empty()
 
     def _game_over(self):
         """ Reset the current level """
@@ -143,10 +157,12 @@ class LevelTwo(Surface):
             self._game_over()
 
     def _create_basic_enemies(self):
-        for i in range(1, self.enemy_count):
+        for i in range(2, self.enemy_count):
             basic_enemy = Enemy((self.width, self.height), i)
             basic_enemy.set_enemy_speed(self.patroller_difficulty)
             self.patrollers.add(basic_enemy)
+        patroller_gnat = PatrollerGnat((self.width, self.height))
+        self.patroller_gnats.add(patroller_gnat)
 
     def _update_enemies(self):
         """ enemy updates """
@@ -166,7 +182,7 @@ class LevelTwo(Surface):
     def _spawn_gnat(self):
         """ spawn a gnat """
         gnat = Gnat(
-            (self.settings.screen_width, self.settings.screen_height))
+            (self.settings.screen_width, self.settings.screen_height), 1)
         self.gnat_x_y_dir = [gnat.x, gnat.y, gnat.get_direction()]
         self.gnats.add(gnat)
 
@@ -189,6 +205,10 @@ class LevelTwo(Surface):
             self._player_collide_hit()
         if pygame.sprite.spritecollideany(self.player, self.walls):
             self._player_collide_hit()
+        if pygame.sprite.spritecollideany(self.player, self.patroller_gnats):
+            self._player_collide_hit()
+        if pygame.sprite.spritecollideany(self.player, self.pat_gnat_lasers):
+            self._player_collide_hit()
         for patroller in self.patrollers:
             if pygame.sprite.spritecollideany(patroller, self.walls):
                 patroller.change_direction()
@@ -199,9 +219,13 @@ class LevelTwo(Surface):
             blit to surface
             check for collision with player
         """
-        self.lasers.update()
         for laser in self.lasers.sprites():
+            laser.update_horizontal()
             self.blit(laser.image, laser.rect)
+
+        for las in self.pat_gnat_lasers.sprites():
+            las.update_vert()
+            self.blit(las.image, las.rect)
 
     def _update_patrollers(self):
         """ 
@@ -213,6 +237,9 @@ class LevelTwo(Surface):
         for enemy in self.patrollers.sprites():
             enemy.check_edges()
             self.blit(enemy.image, enemy.rect)
+        self.patroller_gnats.update()
+        for pat_gnat in self.patroller_gnats.sprites():
+            self.blit(pat_gnat.image, pat_gnat.rect)
 
     def _next_level(self):
         self._empty_sprite_groups()

@@ -15,7 +15,7 @@ class BullFrog:
         self.settings = game_files.Settings()
         self.screen = pygame.display.set_mode(
             (self.settings.screen_width, self.settings.screen_height)
-            )
+        )
         pygame.display.set_caption("Bullfrog")
         self.clock = pygame.time.Clock()
         self.stats = game_files.GameStats()
@@ -27,33 +27,33 @@ class BullFrog:
         """ Load start and game over screens """
         self.main_menu = game_files.MainMenu(
             self.settings.screen_width, self.settings.screen_height
-            )
+        )
         self.game_over = game_files.Game_Over(
             self.settings.screen_width, self.settings.screen_height
-            )
+        )
         self.pause_menu = game_files.PauseMenu(
             self.settings.screen_width, self.settings.screen_height
-            )
+        )
         self.settings_menu = game_files.SettingsMenu(
             self.settings.screen_width, self.settings.screen_height,
             self.game_sound
-            )
+        )
         self.new_high_score_screen = game_files.NewHighScore(
             self.settings.screen_width, self.settings.screen_height,
             self.stats
-            )
+        )
         self._load_level_one()
         self.active_screen = self.main_menu
-    
+
     def _load_level_one(self):
         self.level_one = game_files.LevelOne(
-            self.settings.screen_width, self.settings.screen_height, 
+            self.settings.screen_width, self.settings.screen_height,
             self.settings, self.stats, self.game_sound
         )
 
     def _load_level_two(self):
         self.level_two = game_files.LevelTwo(
-            self.settings.screen_width, self.settings.screen_height, 
+            self.settings.screen_width, self.settings.screen_height,
             self.settings, self.stats, self.game_sound
         )
 
@@ -93,10 +93,10 @@ class BullFrog:
                         self._check_new_hs_screen_buttons(mouse_pos)
                     else:
                         self._check_game_over_buttons(mouse_pos)
-                
+
                 elif self.stats.settings_menu_active:
                     self._check_settings_menu_buttons(mouse_pos)
-                
+
                 elif self.stats.main_menu_active:
                     self._check_main_menu_buttons(mouse_pos)
 
@@ -127,7 +127,7 @@ class BullFrog:
             self._unpause_game()
         elif self.pause_menu.check_buttons(mouse_pos) == 2:
             sys.exit()
-    
+
     def _check_game_over_buttons(self, mouse_pos):
         """
             self.stats.game_over
@@ -136,7 +136,7 @@ class BullFrog:
             self._start_game()
         elif self.game_over.check_buttons(mouse_pos) == 2:
             sys.exit()
-    
+
     def _check_settings_menu_buttons(self, mouse_pos):
         """
             self.stats.settings_menu_active
@@ -171,7 +171,7 @@ class BullFrog:
             sys.exit()
         elif self.main_menu.check_buttons(mouse_pos) == 3:
             self.stats.set_active_screen(settings_menu=True)
-    
+
     def _check_new_hs_screen_buttons(self, mouse_pos):
         if self.new_high_score_screen.check_buttons(mouse_pos) == 1:
             self.stats.new_high_score = False
@@ -179,13 +179,12 @@ class BullFrog:
         elif self.new_high_score_screen.check_buttons(mouse_pos) == 2:
             sys.exit()
 
-
     def _stop_game(self):
         """Game Over"""
         self.stats.game_active = False
         self.stats.game_over = True
         pygame.mouse.set_visible(True)
-    
+
     def _get_active_level(self):
         """ return the active level """
         if self.stats.active_level == 1:
@@ -205,7 +204,8 @@ class BullFrog:
         elif not self.stats.game_active and self.stats.game_over:
 
             if self.stats.new_high_score:
-                self.new_high_score_screen.set_high_score_img(self.stats.high_score)
+                self.new_high_score_screen.set_high_score_img(
+                    self.stats.high_score)
                 self.active_screen = self.new_high_score_screen
             else:
                 self.active_screen = self.game_over
@@ -230,6 +230,7 @@ class BullFrog:
             self.pause_menu.update()
             self.screen.blit(self.pause_menu, self.pause_menu.rect)
         pygame.display.update()
+
 
 if __name__ == '__main__':
     theBullFrog = BullFrog()

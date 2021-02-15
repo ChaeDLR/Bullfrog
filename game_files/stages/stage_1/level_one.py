@@ -168,7 +168,7 @@ class LevelOne(Surface):
         """ spawn a gnat """
         gnat = Gnat(
             (self.settings.screen_width, self.settings.screen_height)
-            )
+        )
         self.gnat_x_y_dir = [gnat.x, gnat.y, gnat.get_direction()]
         self.gnats.add(gnat)
 
@@ -201,8 +201,8 @@ class LevelOne(Surface):
             blit to surface
             check for collision with player
         """
-        self.lasers.update()
         for laser in self.lasers.sprites():
+            laser.update_horizontal()
             self.blit(laser.image, laser.rect)
 
     def _update_patrollers(self):
