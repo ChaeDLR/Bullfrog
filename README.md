@@ -2,6 +2,10 @@
  Made with pygame.
 
 
+### Controls
+Move left, right, up, and down with the arrow keys.
+Press 'esc' key to pause the game.
+
 ### Installing Bullfrog
 ___
 ```
