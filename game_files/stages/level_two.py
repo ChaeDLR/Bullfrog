@@ -1,9 +1,9 @@
 from pygame import Surface, Rect, sprite
 import pygame
-from ...colors import dark_teal, orange, olive_green
-from ...sprites import Player, Enemy, Gnat, Laser, PatrollerGnat
-from ...environment.wall import Wall
-from ...game_ui import Game_Ui
+from ..colors import dark_teal, orange, olive_green
+from ..sprites import Player, Enemy, Gnat, Laser, PatrollerGnat
+from ..environment.wall import Wall
+from ..game_ui import Game_Ui
 import time
 import sys
 

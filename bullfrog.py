@@ -121,7 +121,7 @@ class BullFrog:
 
     def _check_pause_menu_buttons(self, mouse_pos):
         """
-            self.stats.game_paused
+            if self.stats.game_paused
         """
         if self.pause_menu.check_buttons(mouse_pos) == 1:
             self._unpause_game()
@@ -182,7 +182,7 @@ class BullFrog:
             sys.exit()
 
     def _stop_game(self):
-        """Game Over"""
+        """ Game Over """
         self.stats.game_active = False
         self.stats.game_over = True
         pygame.mouse.set_visible(True)
