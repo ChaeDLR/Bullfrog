@@ -1,39 +1,31 @@
-from pygame import Surface, Rect, sprite
+from pygame import sprite
 import pygame
 from ..colors import dark_teal, orange
 from ..sprites import Player, Enemy, Gnat, Laser
 from ..environment.wall import Wall
-from ..game_ui import Game_Ui
 import time
 import sys
+from .level_base import LevelBase
 
 
-class LevelOne(Surface):
+class LevelOne(LevelBase):
 
     def __init__(self, width: int, height: int, settings, stats, game_sound):
         """
             Bullfrog level one
         """
-        super(LevelOne, self).__init__((width, height))
+        super().__init__(width, height, settings, stats, game_sound)
         self.background_color = dark_teal
         settings.bg_color = self.background_color
-        self.rect = Rect(0, 0, width, height)
-        self.width, self.height = width, height
-        self.settings = settings
+        
         self.enemy_count = 6
-        self.difficulty_tracker = 1
-        self.patroller_difficulty = 0
 
         self._load_sprite_groups()
         self._load_environmnet()
         self._load_custom_events()
         self._load_sprites()
-        self.game_sound = game_sound
-
-        self.game_stats = stats
 
         self._create_basic_enemies()
-        self.game_ui = Game_Ui(self, settings, self.game_stats)
 
         pygame.time.set_timer(self.gnat_spawn_event, 1500)
 
@@ -42,29 +34,7 @@ class LevelOne(Surface):
         self.gnat_despawn_event = pygame.USEREVENT+2
         self.laser_spawn_event = pygame.USEREVENT+3
         self.laser_despawn_event = pygame.USEREVENT+4
-        self.player_hit = pygame.USEREVENT+5
-        self.unpause_game = pygame.USEREVENT+6
-
-    def _check_keydown_events(self, event):
-        """ check for and respond to player input """
-        if event.key == pygame.K_ESCAPE:
-            self.pause_events()
-        elif event.key == pygame.K_UP:
-            self.game_sound.player_movement_sound.play()
-            self.player.move_forward()
-        elif event.key == pygame.K_DOWN:
-            self.game_sound.player_movement_sound.play()
-            self.player.move_backward()
-        elif event.key == pygame.K_LEFT:
-            self.player.move_left()
-        elif event.key == pygame.K_RIGHT:
-            self.player.move_right()
-
-    def _check_keyup_events(self, event):
-        if event.key == pygame.K_LEFT:
-            self.player.moving_left = False
-        elif event.key == pygame.K_RIGHT:
-            self.player.moving_right = False
+        self.load_base_custom_events()
 
     def _check_events(self):
         """ check for events """
@@ -72,9 +42,9 @@ class LevelOne(Surface):
             if event.type == pygame.QUIT:
                 sys.exit()
             elif event.type == pygame.KEYDOWN and self.game_stats.game_active:
-                self._check_keydown_events(event)
+                self.check_keydown_events(event)
             elif event.type == pygame.KEYUP and self.game_stats.game_active:
-                self._check_keyup_events(event)
+                self.check_keyup_events(event)
             else:
                 self._check_custom_events(event)
 

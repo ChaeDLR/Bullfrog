@@ -1,5 +1,3 @@
-import random
-
 
 class Settings:
     """ organize our game settings """
