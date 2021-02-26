@@ -191,6 +191,8 @@ class LevelOne(Surface):
             self._player_collide_hit()
         if pygame.sprite.spritecollideany(self.player, self.walls):
             self._player_collide_hit()
+        if pygame.sprite.spritecollideany(self.player, self.gnats):
+            self._player_collide_hit()
         for patroller in self.patrollers:
             if pygame.sprite.spritecollideany(patroller, self.walls):
                 patroller.change_direction()

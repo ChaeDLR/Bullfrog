@@ -205,6 +205,8 @@ class LevelTwo(Surface):
             self._player_collide_hit()
         if pygame.sprite.spritecollideany(self.player, self.walls):
             self._player_collide_hit()
+        if pygame.sprite.spritecollideany(self.player, self.gnats):
+            self._player_collide_hit()
         if pygame.sprite.spritecollideany(self.player, self.patroller_gnats):
             self._player_collide_hit()
         if pygame.sprite.spritecollideany(self.player, self.pat_gnat_lasers):
