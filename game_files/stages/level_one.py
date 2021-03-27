@@ -1,7 +1,7 @@
 from pygame import sprite
 import pygame
 from ..colors import dark_teal, orange
-from ..sprites import Player, Enemy, Gnat, Laser
+from ..sprites import Enemy, Gnat, Laser
 from ..environment.wall import Wall
 import time
 import sys
@@ -10,7 +10,9 @@ from .level_base import LevelBase
 
 class LevelOne(LevelBase):
 
-    def __init__(self, width: int, height: int, settings, stats, game_sound):
+    def __init__(
+        self, width: int, height: int, settings: object, stats: object, game_sound: object
+        ):
         """
             Bullfrog level one
         """
@@ -23,7 +25,6 @@ class LevelOne(LevelBase):
         self._load_sprite_groups()
         self._load_environmnet()
         self._load_custom_events()
-        self._load_sprites()
 
         self._create_basic_enemies()
 
@@ -37,7 +38,7 @@ class LevelOne(LevelBase):
         self.load_base_custom_events()
 
     def _check_events(self):
-        """ check for events """
+        """ levels main check events loop """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
@@ -61,25 +62,11 @@ class LevelOne(LevelBase):
         elif event.type == self.unpause_game:
             pygame.mixer.music.unpause()
 
-    def resume_game(self):
-        pygame.time.set_timer(self.unpause_game, 1, True)
-
-    def pause_events(self):
-        self.game_stats.game_paused = True
-        self.game_stats.game_active = False
-        pygame.mixer.music.pause()
-        pygame.mouse.set_visible(True)
-        pygame.event.wait(self.unpause_game)
-
     def _load_environmnet(self):
         """ Load the walls """
         self.walls.add(Wall((self.width/3, 15), (0, 50)))
         self.walls.add(
             Wall((self.width/3, 15), ((self.width-(self.width/3), 50))))
-
-    def _load_sprites(self):
-        """ load the sprites needed for the level """
-        self.player = Player(self)
 
     def _load_sprite_groups(self):
         self.patrollers = sprite.Group()
@@ -94,13 +81,8 @@ class LevelOne(LevelBase):
 
     def _game_over(self):
         """ Reset the current level """
-        self.game_stats.set_high_score()
+        self.base_game_over()
         self._empty_sprite_groups()
-        self.game_stats.reset_stats()
-        self.game_stats.active_level = 0
-        self.game_stats.set_active_screen(game_over=True)
-        pygame.mixer.music.stop()
-        pygame.mouse.set_visible(True)
 
     def _player_hit(self):
         """ respond to the player getting hit """
@@ -109,7 +91,7 @@ class LevelOne(LevelBase):
         self.player.reset_player()
         self.player.player_hit = False
         self.game_stats.lives_left -= 1
-        self._update_ui()
+        self.update_ui()
         if self.game_stats.lives_left == 0:
             self._game_over()
 
@@ -142,27 +124,18 @@ class LevelOne(LevelBase):
         self.gnat_x_y_dir = [gnat.x, gnat.y, gnat.get_direction()]
         self.gnats.add(gnat)
 
-    def _player_collide_hit(self):
-        """
-            If the player collides with something that hurts it
-        """
-        if self.player.player_hit == False:
-            self.game_sound.player_impact_sound.play()
-        self.player.player_hit = True
-        pygame.time.set_timer(self.player_hit, 500, True)
-
     def _check_collision(self):
         """
             Check for collision between sprites
         """
         if pygame.sprite.spritecollideany(self.player, self.lasers):
-            self._player_collide_hit()
+            self.player_collide_hit()
         if pygame.sprite.spritecollideany(self.player, self.patrollers):
-            self._player_collide_hit()
+            self.player_collide_hit()
         if pygame.sprite.spritecollideany(self.player, self.walls):
-            self._player_collide_hit()
+            self.player_collide_hit()
         if pygame.sprite.spritecollideany(self.player, self.gnats):
-            self._player_collide_hit()
+            self.player_collide_hit()
         for patroller in self.patrollers:
             if pygame.sprite.spritecollideany(patroller, self.walls):
                 patroller.change_direction()
@@ -192,7 +165,7 @@ class LevelOne(LevelBase):
         self._empty_sprite_groups()
         self.game_stats.level += 1
         self.difficulty_tracker += 1
-        self._update_ui()
+        self.update_ui()
         if self.game_stats.level == 10:
             self.game_stats.active_level = 2
             self.game_stats.set_active_screen(game_active=True)
@@ -224,11 +197,6 @@ class LevelOne(LevelBase):
         if self.player.check_position():
             self._next_level()
 
-    def _update_ui(self):
-        self.game_ui.update_level()
-        self.game_ui.update_lives()
-        self.game_ui.display_ui()
-
     def _update_environment(self):
         for wall in self.walls.sprites():
             self.blit(wall.image, wall.rect)
@@ -239,5 +207,5 @@ class LevelOne(LevelBase):
         self._update_environment()
         self._update_enemies()
         self._update_player()
-        self._update_ui()
+        self.update_ui()
         self._check_events()

@@ -1,8 +1,6 @@
 # Chae DeLaRosa
 import pygame
 import sys
-import random
-import time
 import game_files
 
 
@@ -24,7 +22,7 @@ class BullFrog:
         self._load_game_screens()
 
     def _load_game_screens(self):
-        """ Load start and game over screens """
+        """ Load starting game screens """
         self.main_menu = game_files.MainMenu(
             self.settings.screen_width, self.settings.screen_height
         )
@@ -196,7 +194,7 @@ class BullFrog:
             return self.level_two
 
     def _set_active_screen(self):
-
+        """ Check game bools to choose the active screen """
         if self.stats.lives_left == 0:
             self._stop_game()
 
@@ -217,12 +215,13 @@ class BullFrog:
 
         elif not self.stats.game_active and self.stats.main_menu_active:
             self.active_screen = self.main_menu
+        
+        self.stats.change_screen = False
 
     def _update_screen(self):
         """ things to be updated """
         if self.stats.change_screen:
             self._set_active_screen()
-            self.stats.change_screen = False
 
         if not self.stats.game_paused:
             self.screen.fill(self.settings.bg_color)
