@@ -1,23 +1,15 @@
 import pygame.font
 from pygame import Surface
 from .button import Button
-from ..colors import dark_teal, orange
+from .menu_base import MenuBase
 
-
-class MainMenu(Surface):
+class MainMenu(MenuBase):
     """ Initial screen that allows user options to
         Play the game, Enter settings menu, or Quit the game
     """
 
     def __init__(self, width: int, height: int):
         super(MainMenu, self).__init__((width, height))
-        self.background_color = dark_teal
-        self.text_color = orange
-        self.font = pygame.font.SysFont(None, 56, bold=True)
-        self.rect = pygame.Rect(0, 0, width, height)
-
-        self.width, self.height = width, height
-
         self._load_title()
         self._load_buttons()
 

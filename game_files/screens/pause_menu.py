@@ -1,20 +1,12 @@
 import pygame.font
 from pygame import Surface
 from .button import Button
-from ..colors import dark_teal, orange
+from .menu_base import MenuBase
 
-
-class PauseMenu(Surface):
+class PauseMenu(MenuBase):
 
     def __init__(self, width: int, height: int):
         super(PauseMenu, self).__init__((width, height))
-        self.background_color = dark_teal
-        self.text_color = orange
-        self.font = pygame.font.SysFont(None, 50)
-        self.rect = pygame.Rect(0, 0, width, height)
-
-        self.width, self.height = width, height
-
         self._load_buttons()
         self._load_text()
 

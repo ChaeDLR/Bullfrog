@@ -1,9 +1,9 @@
 import pygame.font
 from pygame import Surface
 from .button import Button
-from ..colors import dark_teal, orange
+from .menu_base import MenuBase
 
-class NewHighScore(Surface):
+class NewHighScore(MenuBase):
     """
         When the game ends if the player has reached a new high score
         Show this screen
@@ -11,11 +11,6 @@ class NewHighScore(Surface):
 
     def __init__(self, width: int, height: int, stats):
         super(NewHighScore, self).__init__((width, height))
-        self.background_color = dark_teal
-        self.text_color = orange
-        self.rect = pygame.Rect(0, 0, width, height)
-
-        self.width, self.height = width, height
 
         self._load_button()
         self._load_text(stats.high_score)

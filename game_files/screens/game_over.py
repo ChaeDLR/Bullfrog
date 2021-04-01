@@ -1,18 +1,12 @@
 import pygame.font
 from pygame import Surface
 from .button import Button
-from ..colors import dark_teal, orange
+from .menu_base import MenuBase
 
-
-class Game_Over(Surface):
+class Game_Over(MenuBase):
 
     def __init__(self, width: int, height: int):
         super(Game_Over, self).__init__((width, height))
-        self.background_color = dark_teal
-        self.text_color = orange
-        self.rect = pygame.Rect(0, 0, width, height)
-
-        self.width, self.height = width, height
 
         self._load_buttons()
         self._load_text()

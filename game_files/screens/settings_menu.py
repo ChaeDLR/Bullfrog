@@ -3,10 +3,10 @@ import pygame.transform
 import os
 from pygame import Surface
 from .button import Button
-from ..colors import dark_teal, orange
+from .menu_base import MenuBase
 
 
-class SettingsMenu(Surface):
+class SettingsMenu(MenuBase):
     """
         Settings menu
         Allow user to adjust sound volume
@@ -14,15 +14,9 @@ class SettingsMenu(Surface):
 
     def __init__(self, width: int, height: int, game_sound):
         super(SettingsMenu, self).__init__((width, height))
-        self.background_color = dark_teal
-        self.text_color = orange
-        self.rect = pygame.Rect(0, 0, width, height)
 
         self.screen_rows = height/6
         self.screen_columns = width/6
-
-        self.width, self.height = width, height
-
         self.game_sound = game_sound
 
         self.music_plus_pressed, self.music_minus_pressed = False, False
