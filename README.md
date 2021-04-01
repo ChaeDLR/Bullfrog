@@ -1,5 +1,5 @@
 # Bullfrog
- Made with pygame.
+This is my first pygame project. It started as a frogger clone. It's now a strange mix between Frogger and Alien Invasion. There are 2 levels and 2 enemy types. The game will record and save your high score and the volume settings if you change them and press the save button in the settings menu.
 
 
 ### Controls
